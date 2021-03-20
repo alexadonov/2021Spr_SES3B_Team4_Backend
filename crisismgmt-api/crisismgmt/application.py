@@ -7,7 +7,7 @@ from flask import Flask
 from flask_cors import CORS
 
 
-def create_app(app_name='PROCTOR_API'):
+def create_app(app_name='CRISISMGMT_API'):
     app = Flask(app_name)
     CORS(app)
     app.config.from_object('crisismgmt.config.BaseConfig')

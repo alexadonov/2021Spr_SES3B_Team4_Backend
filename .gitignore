@@ -8,6 +8,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+bin/
 build/
 develop-eggs/
 dist/
@@ -136,3 +137,5 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+crisismgmt-api/pyvenv.cfg
+crisismgmt-api/pip-selfcheck.json

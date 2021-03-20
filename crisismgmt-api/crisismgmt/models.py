@@ -14,7 +14,7 @@ db = SQLAlchemy()
 class User(db.Model):
     __tablename__ = 'users'
 
-    student_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, primary_key=True)
     is_admin = db.Column(db.Integer)
     first_name = db.Column(db.String(191), nullable=False)
     last_name = db.Column(db.String(191), nullable=False)
@@ -27,7 +27,7 @@ class User(db.Model):
     circuits = relationship("Circuit")
 
     def __init__(self, student_id, is_admin, first_name, last_name, email, password, confirm_admin):
-        self.student_id = student_id
+        self.user_id = student_id
         self.is_admin = is_admin
         self.first_name = first_name
         self.last_name = last_name

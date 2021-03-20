@@ -9,10 +9,12 @@ from flask_cors import CORS, cross_origin
 from datetime import datetime, timedelta
 from sqlalchemy import exc
 from functools import wraps
-from .models import db, User, Circuit
+from .models import db, User
 import jwt
 
 api = Blueprint('api', __name__)
+
+ODAPI_URL = 'http://127.0.0.1:8000/'
 
 @api.route('/')
 def index():
@@ -46,9 +48,9 @@ def login():
         'iat':str(datetime.utcnow()),
         'exp': str(datetime.utcnow() + timedelta(minutes=30))},
         current_app.config['SECRET_KEY'])
-    student_id = User.query.filter_by(email=data['email']).first().student_id
+    student_id = User.query.filter_by(email=data['email']).first().user_id
     is_admin = User.query.filter_by(email=data['email']).first().is_admin
-    return jsonify({ 'student_id': student_id , 'is_admin': is_admin, 'token': token.decode('UTF-8') }), 200
+    return jsonify({ 'user_id': user_id , 'is_admin': is_admin, 'token': token.decode('UTF-8') }), 200
 
 
 # This is a decorator function which will be used to protect authentication-sensitive API endpoints
