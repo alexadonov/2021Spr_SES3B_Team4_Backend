@@ -52,7 +52,25 @@ def login():
     is_admin = User.query.filter_by(email=data['email']).first().is_admin
     return jsonify({ 'user_id': user_id , 'is_admin': is_admin, 'token': token.decode('UTF-8') }), 200
 
+ 
 
+@api.route('/maps/filter', methods=('GET',))
+def get_safe_locations():
+    try:
+        safe = []
+        unsafe = []
+        latitude = request.args.get('latitude', default=0, type=float)
+        longitude = request.args.get('longitude', default=0, type=float)
+        is_safe = request.args.get('is_safe', default=None, type=bool)
+        not_safe = request.args.get('not_safe', default=None, type=bool)
+        
+        #Append latitude and longitude to array safe
+
+        #Return array 
+        payload = {'safe': safe);
+        return jsonify(payload); 
+                   
+  
 # This is a decorator function which will be used to protect authentication-sensitive API endpoints
 def token_required(f):
     @wraps(f)
