@@ -57,8 +57,8 @@ class User(db.Model):
 
 class ContactList(db.Model):
     __tablename__ = 'contact_list'
-    contact_list_id = db.Column(INTEGER(unsigned=True), primary_key=True)
-    user_id = db.Column(INTEGER(unsigned=True), db.ForeignKey('users.user_id'), nullable=False)
+    contact_list_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False)
     contact_list = db.Column(db.Text, nullable=False)
     
     
@@ -69,16 +69,16 @@ class ContactList(db.Model):
         self.contact_list = contact_list
     
 
-    def to_dict(self):
-        return dict('contact_list_id':contact_list_id, 
-                    'user_id': user_id,
-                    'contact_list' : contact_list)
+    #def to_dict(self):
+        #return dict('contact_list_id':contact_list_id, 
+                    #'user_id': user_id,
+                    #'contact_list' : contact_list)
 
 
 class Event(db.Model):
     __tablename__ = 'event'
     
-    event_id = db.Column(INTEGER(unsigned=True), primary_key=True)
+    event_id = db.Column(db.Integer, primary_key=True)
     event_name = db.Column(db.String(500), nullable=False)
     severity = db.Column(db.String(191), nullable=False)
     resource_list_id = db.Column(db.Integer, nullable=False)
@@ -91,14 +91,14 @@ class Event(db.Model):
         self.resource_list_id = resource_list_id
         self.help_doc_id = help_doc_id
 
-    def to_dict(self):
+    #def to_dict(self):
 
 
 
 class Node(db.Model):
-    __tablename__ = 'Node'
+    __tablename__ = 'node'
 
-    node_id = db.Column(INTEGER(unsigned=True), primary_key=True)
+    node_id = db.Column(db.Integer, primary_key=True)
     node_name = db.Column(db.String(500), nullable=False)
     node_location = db.Column(db.String(500), nullable=False)
     node_type = db.Column(db.String(500), nullable=False)
@@ -113,39 +113,39 @@ class Node(db.Model):
         self.max_capacity = max_capacity
         self.current_capacity = current_capacity
 
-    def to_dict(self):
+    #def to_dict(self):
 
 class HelpDoc(db.Model):
     __tablename__ = 'help_doc'
 
-    help_doc_id = db.Column(INTEGER(unsigned=True), primary_key=True)
+    help_doc_id = db.Column(db.Integer, primary_key=True)
     content_url = db.Column(db.String(500), nullable=False)
 
-    def __init__(help_doc_id,content_url)
+    def __init__(self, help_doc_id, content_url):
         this.help_doc_id = help_doc_id
         this.content_url = content_url
 
-    def to_dict(self):
+    #def to_dict(self):
 
 class ResourceList:
     __tablename__ = 'resource_list'
 
-    resource_list_id = db.Column(INTEGER(unsigned=True), primary_key=True)
-    event_id = db.Column(INTEGER(unsigned=True), db.ForeignKey('event.event_id'), nullable=False)
+    resource_list_id = db.Column(db.Integer, primary_key=True)
+    event_id = db.Column(db.Integer, nullable=False)
     resource_id = db.Column(db.Integer, nullable=False)
 
-    def __init__(resource_list_id, event_id, resource_id):
+    def __init__(self, resource_list_id, event_id, resource_id):
         this.resource_list_id = resource_list_id
         this.event_id = event_id
         this.resource_id = resource_id
 
-    def to_dict(self):
+    #def to_dict(self):
     
 
 class Resource(db.Model):
     __tablename__ = 'resource'
 
-    resource_id = db.Column(INTEGER(unsigned=True), primary_key=True)
+    resource_id = db.Column(db.Integer, primary_key=True)
     resource_name = db.Column(db.String(500), nullable=False)
     resource_quantity = db.Column(db.Integer, nullable=False)
 
@@ -154,7 +154,7 @@ class Resource(db.Model):
         this.resource_name = resource_name
         this.resource_quantity = resource_quantity
 
-    def to_dict(self):
+    #def to_dict(self):
 
 
 

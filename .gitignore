@@ -139,3 +139,6 @@ dmypy.json
 cython_debug/
 crisismgmt-api/pyvenv.cfg
 crisismgmt-api/pip-selfcheck.json
+crisismgmt-api/.DS_Store
+.DS_Store
+.DS_Store
