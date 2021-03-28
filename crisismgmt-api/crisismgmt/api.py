@@ -9,7 +9,8 @@ from flask_cors import CORS, cross_origin
 from datetime import datetime, timedelta
 from sqlalchemy import exc
 from functools import wraps
-from .models import db, User
+from .models import db, User, required_fields
+from .services.misc import pre_init_check, MissingModelFields, datetime_to_str, parse_datetime
 import jwt
 
 api = Blueprint('api', __name__)
@@ -24,12 +25,22 @@ def index():
 
 @api.route('/register', methods=('POST',))
 def register():
+    """
+    Register new users, examiners or examineers
+    """
     try:
         data = request.get_json()
+        #pre_init_check(required_fields['users'], **data)
         user = User(**data)
         db.session.add(user)
         db.session.commit()
         return jsonify(user.to_dict()), 201
+    #except (MissingModelFields) as e:
+       #return jsonify({ 'message': e.args }), 400
+    except exc.IntegrityError as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({ 'message': 'User with email {} exists.'.format(data['email']) }), 409
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
@@ -37,20 +48,27 @@ def register():
 
 @api.route('/login', methods=('POST',))
 def login():
+    """
+    Login for existing users
+    """
     data = request.get_json()
     user = User.authenticate(**data)
 
     if not user:
         return jsonify({ 'message': 'Invalid credentials', 'authenticated': False }), 401
-
-    token = jwt.encode({
-        'sub': user.email,
-        'iat':str(datetime.utcnow()),
-        'exp': str(datetime.utcnow() + timedelta(minutes=30))},
-        current_app.config['SECRET_KEY'])
-    student_id = User.query.filter_by(email=data['email']).first().user_id
-    is_admin = User.query.filter_by(email=data['email']).first().is_admin
-    return jsonify({ 'user_id': user_id , 'is_admin': is_admin, 'token': token.decode('UTF-8') }), 200
+    
+    token = jwt.encode(
+        {
+        'exp': datetime.now() + timedelta(minutes=90),
+        'iat': datetime.now(),
+        'sub': user.email
+        },
+        current_app.config['SECRET_KEY'],
+        algorithm='HS256')
+    #print(token)
+    #user_id = data['user_id']
+    #user = User.query.get(user_id)
+    return jsonify({ 'user': user.to_dict(), 'token': token.decode('UTF-8') }), 200
 
 
 # This is a decorator function which will be used to protect authentication-sensitive API endpoints

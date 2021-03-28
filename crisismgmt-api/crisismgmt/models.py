@@ -4,17 +4,24 @@ models.py
 """
 
 from datetime import datetime
+from dateutil import parser
+from flask import current_app
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.dialects.mysql import INTEGER
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
+from .services.misc import datetime_to_str, parse_datetime
+import jwt
 
 db = SQLAlchemy()
+
+required_fields = {'users':['email', 'is_authority' 'first_name', 'last_name', 'password']}
 
 
 class User(db.Model):
     __tablename__ = 'users'
 
-    user_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     is_authority = db.Column(db.Integer)
     first_name = db.Column(db.String(191), nullable=False)
     last_name = db.Column(db.String(191), nullable=False)
@@ -27,15 +34,14 @@ class User(db.Model):
 
     contact_list = db.relationship("ContactList", backref="users", cascade='all, delete')
 
-    def __init__(self, user_id, is_authority, first_name, last_name, email, password, status, location):
-        self.user_id = user_id
+    def __init__(self, is_authority, first_name, last_name, email, password):
         self.is_authority = is_authority
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
         self.password = generate_password_hash(password, method='sha256')
-        self.status = status
-        self.location = location
+        self.status = 'null'
+        self.location = 'location'
     
     @classmethod
     def authenticate(cls, **kwargs):
@@ -51,14 +57,33 @@ class User(db.Model):
 
         return user
 
+    @classmethod
+    def decode_auth_token(cls, token):
+        """
+        Decodes the auth token
+        :param auth_token:
+        :return: integer|string
+        """
+        try:
+            payload = jwt.decode(token, current_app.config['SECRET_KEY'])
+            return payload['sub']
+        except Exception:
+            return 'Invalid token. Please log in again.'
+
     def to_dict(self):
-        return dict(id=self.student_id, email=self.email)
+        return {
+            'user_id':self.user_id,
+            'email':self.email,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'is_authority': self.is_authority
+        }
 
 
 class ContactList(db.Model):
     __tablename__ = 'contact_list'
-    contact_list_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, nullable=False)
+    contact_list_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = user_id = db.Column(db.Integer, db.ForeignKey('users.user_id', ondelete='CASCADE'))
     contact_list = db.Column(db.Text, nullable=False)
     
     
@@ -78,7 +103,7 @@ class ContactList(db.Model):
 class Event(db.Model):
     __tablename__ = 'event'
     
-    event_id = db.Column(db.Integer, primary_key=True)
+    event_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     event_name = db.Column(db.String(500), nullable=False)
     severity = db.Column(db.String(191), nullable=False)
     resource_list_id = db.Column(db.Integer, nullable=False)
@@ -98,7 +123,7 @@ class Event(db.Model):
 class Node(db.Model):
     __tablename__ = 'node'
 
-    node_id = db.Column(db.Integer, primary_key=True)
+    node_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     node_name = db.Column(db.String(500), nullable=False)
     node_location = db.Column(db.String(500), nullable=False)
     node_type = db.Column(db.String(500), nullable=False)
@@ -118,7 +143,7 @@ class Node(db.Model):
 class HelpDoc(db.Model):
     __tablename__ = 'help_doc'
 
-    help_doc_id = db.Column(db.Integer, primary_key=True)
+    help_doc_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     content_url = db.Column(db.String(500), nullable=False)
 
     def __init__(self, help_doc_id, content_url):
@@ -130,7 +155,7 @@ class HelpDoc(db.Model):
 class ResourceList:
     __tablename__ = 'resource_list'
 
-    resource_list_id = db.Column(db.Integer, primary_key=True)
+    resource_list_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     event_id = db.Column(db.Integer, nullable=False)
     resource_id = db.Column(db.Integer, nullable=False)
 
@@ -145,7 +170,7 @@ class ResourceList:
 class Resource(db.Model):
     __tablename__ = 'resource'
 
-    resource_id = db.Column(db.Integer, primary_key=True)
+    resource_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     resource_name = db.Column(db.String(500), nullable=False)
     resource_quantity = db.Column(db.Integer, nullable=False)
 
