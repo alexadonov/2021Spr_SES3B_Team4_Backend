@@ -26,7 +26,7 @@ def index():
 @api.route('/register', methods=('POST',))
 def register():
     """
-    Register new users, examiners or examineers
+    Register new users
     """
     try:
         data = request.get_json()
