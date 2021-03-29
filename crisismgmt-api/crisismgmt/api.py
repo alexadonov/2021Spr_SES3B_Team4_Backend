@@ -67,8 +67,8 @@ def get_safe_locations():
         #Append latitude and longitude to array safe
 
         #Return array 
-        payload = {'safe': safe);
-        return jsonify(payload); 
+        payload = {'safe': safe.to_dict(), 'token': token.decode('UTF-8') };
+        return jsonify(payload), 200; 
                    
   
 # This is a decorator function which will be used to protect authentication-sensitive API endpoints
