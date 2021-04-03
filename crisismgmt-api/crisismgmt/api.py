@@ -12,7 +12,8 @@ from functools import wraps
 from .models import db, User, required_fields
 from .services.misc import pre_init_check, MissingModelFields, datetime_to_str, parse_datetime
 import jwt
-
+import pymysql
+pymysql.install_as_MySQLdb()
 api = Blueprint('api', __name__)
 
 ODAPI_URL = 'http://127.0.0.1:8000/'
