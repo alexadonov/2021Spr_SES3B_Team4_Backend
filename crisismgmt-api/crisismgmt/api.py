@@ -69,6 +69,30 @@ def get_safe_locations():
         #Return array 
         payload = {'safe': safe.to_dict(), 'token': token.decode('UTF-8') };
         return jsonify(payload), 200; 
+
+@api.route('/maps/toggle', methods=('POST',))
+def toggle_location_permission():
+    """
+    Location permissions
+    """
+    # Maybe here have some user authentication here later
+    try:
+        data = request.json();
+        location_on = User.query.filter_by(location).first()
+
+        if location_on:
+            contact_list = data['contact_list']
+            is_authority = data['is_authority']
+
+            # User.query.filter_by(User.is_authority).delete()
+            contact_list.query.filter_by(is_authority).delete()
+            db.session.commit()
+        else: 
+            # Raise exception
+            raise Exception('Location is already off')
+
+    except (Exception, exc.SQLAlchemyError) as e:
+        return jsonify({ 'message': e.args }), 500      
                    
   
 # This is a decorator function which will be used to protect authentication-sensitive API endpoints
