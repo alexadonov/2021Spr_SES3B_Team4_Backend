@@ -230,6 +230,12 @@ class ChatMessages(db.Model):
             'user_id':self.user_id,
             'message':self.message
             }
+            
+    def columns_to_dict(self):
+        dict_ = {}
+        for key in self.__mapper__.c.keys():
+            dict_[key] = getattr(self, key)
+        return dict_
 
 
 

@@ -133,8 +133,8 @@ def save_message():
         return jsonify({ 'message': e.args }), 500
 
 
-@api.route('chat/get-chat-list', methods=('GET',))
-def get_chat_list():
+@api.route('chat/get-chatroom-list', methods=('GET',))
+def get_chatroom_list():
     """
     Create new chat room between two users
     """
@@ -147,7 +147,32 @@ def get_chat_list():
         print (payload)
 
 
-        return jsonify({'message' : 'success', 'chat_room_list': payload}), 201
+        return jsonify({'chat_room_list': payload}), 201
+    #except (MissingModelFields) as e:
+       #return jsonify({ 'message': e.args }), 400
+    except exc.IntegrityError as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({ 'message': 'integrity errror' }), 409
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
+
+@api.route('chat/get-chatroom-messages', methods=('GET',))
+def get_chatroom_messages():
+    """
+    Create new chat room between two users
+    """
+    try:
+        data = request.get_json()
+        chat_messages = ChatMessages.query.filter_by(room_id = data['room_id']).all()
+        payload = []
+        for c in chat_messages:
+            payload.append(c.columns_to_dict())
+        print (payload)
+
+
+        return jsonify({'chat_room_messages': payload}), 201
     #except (MissingModelFields) as e:
        #return jsonify({ 'message': e.args }), 400
     except exc.IntegrityError as e:
