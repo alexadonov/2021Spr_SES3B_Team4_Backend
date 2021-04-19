@@ -210,7 +210,15 @@ class ChatMessages(db.Model):
     room_id = db.Column(db.Integer, db.ForeignKey('chat_rooms.room_id', ondelete='CASCADE'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id', ondelete='CASCADE'))
     message = db.Column(db.String(500), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
+    def to_dict(self):
+        return {
+            'message_id':self.message_id,
+            'room_id':self.room_id,
+            'user_id':self.user_id,
+            'message':self.message
+            }
 
 
 

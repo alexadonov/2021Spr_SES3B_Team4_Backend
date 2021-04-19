@@ -78,14 +78,13 @@ def create_chat():
     """
     try:
         data = request.get_json()
-        #pre_init_check(required_fields['users'], **data)
+
         room_data = {}
         room_data['room_name'] = data.get('room_name')
-        print(room_data)
-        print(data)
         room = ChatRoom(**room_data)
         db.session.add(room)
         db.session.commit()
+
         return jsonify({'message' : 'Chat room added', 'room': room.to_dict()}), 201
     #except (MissingModelFields) as e:
        #return jsonify({ 'message': e.args }), 400
@@ -97,6 +96,28 @@ def create_chat():
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
 
+
+@api.route('/save-message', methods=('POST',))
+def save_message():
+    """
+    Create new chat room between two users
+    """
+    try:
+        data = request.get_json()
+        message = ChatMessages(**data)
+        db.session.add(message)
+        db.session.commit()
+
+        return jsonify({'message' : 'Chat msg saved', 'chat_message': message.to_dict()}), 201
+    #except (MissingModelFields) as e:
+       #return jsonify({ 'message': e.args }), 400
+    except exc.IntegrityError as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({ 'message': 'integrity errror' }), 409
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
 
 # This is a decorator function which will be used to protect authentication-sensitive API endpoints
 def token_required(f):
