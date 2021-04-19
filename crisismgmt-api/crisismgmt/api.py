@@ -8,6 +8,7 @@ from flask import Blueprint, jsonify, request, make_response, current_app
 from flask_cors import CORS, cross_origin
 from datetime import datetime, timedelta
 from sqlalchemy import exc
+from sqlalchemy import inspect
 from functools import wraps
 from .models import db, User, ContactList, Event, Node, HelpDoc, ResourceList, Resource, ChatRoom, ChatParticipants, ChatMessages, required_fields
 from .services.misc import pre_init_check, MissingModelFields, datetime_to_str, parse_datetime
@@ -71,10 +72,10 @@ def login():
     #user = User.query.get(user_id)
     return jsonify({ 'user': user.to_dict(), 'token': token.decode('UTF-8') }), 200
 
-@api.route('/create-chat', methods=('POST',))
+@api.route('/chat/create-chat', methods=('POST',))
 def create_chat():
     """
-    Create new chat room between two users
+    Create new chat room between two/multiple users
     """
     try:
         data = request.get_json()
@@ -109,10 +110,10 @@ def create_chat():
         return jsonify({ 'message': e.args }), 500
 
 
-@api.route('/save-message', methods=('POST',))
+@api.route('chat/save-message', methods=('POST',))
 def save_message():
     """
-    Create new chat room between two users
+    Save a chat message
     """
     try:
         data = request.get_json()
@@ -121,6 +122,32 @@ def save_message():
         db.session.commit()
 
         return jsonify({'message' : 'Chat msg saved', 'chat_message': message.to_dict()}), 201
+    #except (MissingModelFields) as e:
+       #return jsonify({ 'message': e.args }), 400
+    except exc.IntegrityError as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({ 'message': 'integrity errror' }), 409
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
+
+
+@api.route('chat/get-chat-list', methods=('GET',))
+def get_chat_list():
+    """
+    Create new chat room between two users
+    """
+    try:
+        data = request.get_json()
+        chat_list = ChatParticipants.query.filter_by(user_id = data['user_id']).all()
+        payload = []
+        for u in chat_list:
+            payload.append(u.columns_to_dict())
+        print (payload)
+
+
+        return jsonify({'message' : 'success', 'chat_room_list': payload}), 201
     #except (MissingModelFields) as e:
        #return jsonify({ 'message': e.args }), 400
     except exc.IntegrityError as e:
@@ -163,5 +190,10 @@ def token_required(f):
             return jsonify(invalid_msg), 401
 
     return _verify
+
+#converts a resultproxy object type to dict
+def object_as_dict(obj):
+    return {c.key: getattr(obj, c.key)
+            for c in inspect(obj).mapper.column_attrs}
 
 

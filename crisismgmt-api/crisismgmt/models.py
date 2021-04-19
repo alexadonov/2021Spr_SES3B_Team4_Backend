@@ -200,7 +200,18 @@ class ChatParticipants(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id', ondelete='CASCADE'))
     chat_id = db.Column(db.Integer, db.ForeignKey('chat_rooms.room_id', ondelete='CASCADE'))
 
-    #def to_dict(self):
+    def to_dict(self):
+        return{
+        'participant_id':self.participant_id,
+        'user_id':self.user_id,
+        'chat_id':self.chat_id
+        }
+
+    def columns_to_dict(self):
+        dict_ = {}
+        for key in self.__mapper__.c.keys():
+            dict_[key] = getattr(self, key)
+        return dict_
 
 
 class ChatMessages(db.Model):
