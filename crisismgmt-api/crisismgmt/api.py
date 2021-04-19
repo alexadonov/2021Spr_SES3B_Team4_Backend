@@ -79,13 +79,25 @@ def create_chat():
     try:
         data = request.get_json()
 
-        room_data = {}
-        room_data['room_name'] = data.get('room_name')
+        room_data = data['room_info']
+        room_participants = data['participants']
+        #room_data['room_name'] = data.get('room_name')
         room = ChatRoom(**room_data)
         db.session.add(room)
         db.session.commit()
 
-        return jsonify({'message' : 'Chat room added', 'room': room.to_dict()}), 201
+        room_to_dict = room.to_dict()
+        print(room_to_dict)
+        room_id = room_to_dict['room_id']
+        print(room_id)
+
+        for i in room_participants:
+            print(i)
+            participant = ChatParticipants(chat_id = room_id, user_id = i)
+            db.session.add(participant)
+            db.session.commit()
+
+        return jsonify({'message' : 'Chat room added', 'room': room.to_dict(), 'participants': room_participants}), 201
     #except (MissingModelFields) as e:
        #return jsonify({ 'message': e.args }), 400
     except exc.IntegrityError as e:
