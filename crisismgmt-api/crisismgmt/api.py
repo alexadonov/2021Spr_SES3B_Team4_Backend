@@ -79,6 +79,7 @@ def get_safe_locations():
     # table which isn't done yet
     
     try:
+        data = request.get_json();
         locations = [];
         # latitude = request.args.get('latitude', default=0, type=float)
         # longitude = request.args.get('longitude', default=0, type=float)
