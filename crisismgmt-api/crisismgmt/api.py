@@ -9,7 +9,7 @@ from flask_cors import CORS, cross_origin
 from datetime import datetime, timedelta
 from sqlalchemy import exc
 from functools import wraps
-from .models import db, User, required_fields
+from .models import db, User, ContactList, Event, Node, HelpDoc, ResourceList, Resource, ChatRoom, ChatParticipants, ChatMessages, required_fields
 from .services.misc import pre_init_check, MissingModelFields, datetime_to_str, parse_datetime
 import jwt
 import pymysql
@@ -71,6 +71,32 @@ def login():
     #user = User.query.get(user_id)
     return jsonify({ 'user': user.to_dict(), 'token': token.decode('UTF-8') }), 200
 
+@api.route('/create-chat', methods=('POST',))
+def create_chat():
+    """
+    Create new chat room between two users
+    """
+    try:
+        data = request.get_json()
+        #pre_init_check(required_fields['users'], **data)
+        room_data = {}
+        room_data['room_name'] = data.get('room_name')
+        print(room_data)
+        print(data)
+        room = ChatRoom(**room_data)
+        db.session.add(room)
+        db.session.commit()
+        return jsonify({'message' : 'Chat room added', 'room': room.to_dict()}), 201
+    #except (MissingModelFields) as e:
+       #return jsonify({ 'message': e.args }), 400
+    except exc.IntegrityError as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({ 'message': 'integrity errror' }), 409
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
+
 
 # This is a decorator function which will be used to protect authentication-sensitive API endpoints
 def token_required(f):
@@ -104,3 +130,5 @@ def token_required(f):
             return jsonify(invalid_msg), 401
 
     return _verify
+
+
