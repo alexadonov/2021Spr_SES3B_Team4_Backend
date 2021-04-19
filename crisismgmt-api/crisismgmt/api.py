@@ -9,11 +9,11 @@ from flask_cors import CORS, cross_origin
 from datetime import datetime, timedelta
 from sqlalchemy import exc
 from functools import wraps
-from .models import db, User, required_fields
+from .models import db, User, required_fields, ContactList
 from .services.misc import pre_init_check, MissingModelFields, datetime_to_str, parse_datetime
 import jwt
-import pymysql
-pymysql.install_as_MySQLdb()
+# import pymysql
+# pymysql.install_as_MySQLdb()
 api = Blueprint('api', __name__)
 
 ODAPI_URL = 'http://127.0.0.1:8000/'
@@ -73,38 +73,49 @@ def login():
 
  
 
-@api.route('/maps/filter', methods=('GET',))
+@api.route('/maps/filter', methods=('POST', 'GET'))
 def get_safe_locations():
+    # Get the nodeID for all nodes, then return if that node is safe or not. This should be under the Zone
+    # table which isn't done yet
+    
     try:
-        safe = []
-        unsafe = []
-        latitude = request.args.get('latitude', default=0, type=float)
-        longitude = request.args.get('longitude', default=0, type=float)
-        is_safe = request.args.get('is_safe', default=None, type=bool)
-        not_safe = request.args.get('not_safe', default=None, type=bool)
-        
-        #Append latitude and longitude to array safe
+        locations = [];
+        # latitude = request.args.get('latitude', default=0, type=float)
+        # longitude = request.args.get('longitude', default=0, type=float)
+        # Getting the Node ID of safe and unsafe zones
+        safe = Zone.query.filter_by(nodeID = data['nodeID'], safety = 'Y')
+        unsafe = Zone.query.filter_by(nodeID = data['nodeID'],safety = 'N')     
+        # is_safe = request.args.get('is_safe', default=0, type=int)
+        # not_safe = request.args.get('not_safe', default=0, type=int)
+
+        #Appending safe and unsafe
+        locations.append({'safe': safe})
+        locations.append({'unsafe': unsafe})
+        db.session.commit()
 
         #Return array 
-        payload = {'safe': safe.to_dict(), 'token': token.decode('UTF-8') };
+        payload = {'locations': locations };
         return jsonify(payload), 200; 
 
-@api.route('/maps/toggle', methods=('POST',))
+    except (Exception, exc.SQLAlchemyError) as e:
+        return jsonify({ 'message': e.args }), 500
+
+
+@api.route('/maps/toggle', methods=('POST', ))
 def toggle_location_permission():
     """
     Location permissions
     """
     # Maybe here have some user authentication here later
     try:
-        data = request.json();
-        location_on = User.query.filter_by(location).first()
-
+        data = request.get_json();
+        # location = request.args.get('location', default = None)
+        location_on = User.query.filter_by(location = data['location']).first()  
+       
         if location_on:
-            contact_list = data['contact_list']
-            is_authority = data['is_authority']
-
-            # User.query.filter_by(User.is_authority).delete()
-            contact_list.query.filter_by(is_authority).delete()
+            # contact_list = data['contact_list']
+            # is_authority = data['is_authority']
+            ContactList.query.filter_by(is_authority = data['is_authority']).delete()
             db.session.commit()
         else: 
             # Raise exception
