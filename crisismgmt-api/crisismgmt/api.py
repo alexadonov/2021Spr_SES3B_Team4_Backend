@@ -153,7 +153,7 @@ def get_chatroom_list():
         print (payload)
 
 
-        return jsonify({'chatroom_list': payload}), 201
+        return jsonify({'chatroom_list': payload}), 200
     #except (MissingModelFields) as e:
        #return jsonify({ 'message': e.args }), 400
     except exc.IntegrityError as e:
@@ -184,7 +184,7 @@ def get_chatroom_messages():
         print (payload)
 
 
-        return jsonify({'chatroom_messages': payload}), 201
+        return jsonify({'chatroom_messages': payload}), 200
     #except (MissingModelFields) as e:
        #return jsonify({ 'message': e.args }), 400
     except exc.IntegrityError as e:
