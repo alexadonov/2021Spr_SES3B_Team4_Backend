@@ -72,33 +72,33 @@ def login():
     #user = User.query.get(user_id)
     return jsonify({ 'user': user.to_dict(), 'token': token.decode('UTF-8') }), 200
 
-@api.route('/chat/create-chat', methods=('POST',))
-def create_chat():
+@api.route('/chat/create-chatroom', methods=('POST',))
+def create_chatroom():
     """
-    Create new chat room between two/multiple users
+    Create new chat chatroom between two/multiple users
     """
     try:
         data = request.get_json()
 
-        room_data = data['room_info']
-        room_participants = data['participants']
-        #room_data['room_name'] = data.get('room_name')
-        room = ChatRoom(**room_data)
-        db.session.add(room)
+        chatroom_data = data['chatroom_info']
+        chatroom_participants = data['participants']
+        #chatroom_data['chatroom_name'] = data.get('chatroom_name')
+        chatroom = ChatRoom(**chatroom_data)
+        db.session.add(chatroom)
         db.session.commit()
 
-        room_to_dict = room.to_dict()
-        print(room_to_dict)
-        room_id = room_to_dict['room_id']
-        print(room_id)
+        chatroom_to_dict = chatroom.to_dict()
+        print(chatroom_to_dict)
+        chatroom_id = chatroom_to_dict['chatroom_id']
+        print(chatroom_id)
 
-        for i in room_participants:
+        for i in chatroom_participants:
             print(i)
-            participant = ChatParticipants(chat_id = room_id, user_id = i)
+            participant = ChatParticipants(chat_id = chatroom_id, user_id = i)
             db.session.add(participant)
             db.session.commit()
 
-        return jsonify({'message' : 'Chat room added', 'room': room.to_dict(), 'participants': room_participants}), 201
+        return jsonify({'message' : 'Chatroom added', 'chatroom': chatroom.to_dict(), 'chatroom_participants': chatroom_participants}), 201
     #except (MissingModelFields) as e:
        #return jsonify({ 'message': e.args }), 400
     except exc.IntegrityError as e:
@@ -136,18 +136,24 @@ def save_message():
 @api.route('chat/get-chatroom-list', methods=('GET',))
 def get_chatroom_list():
     """
-    Create new chat room between two users
+    Create new chat chatroom between two users
     """
     try:
         data = request.get_json()
         chat_list = ChatParticipants.query.filter_by(user_id = data['user_id']).all()
         payload = []
         for u in chat_list:
-            payload.append(u.columns_to_dict())
+            chatroom_name = ChatRoom.query.filter_by(chatroom_id = u.chat_id).first()
+            print(chatroom_name.chatroom_name)
+            dict_pa = u.columns_to_dict()
+            dict_pa.pop('participant_id')
+            dict_pa.pop('user_id')
+            dict_pa.update({"chatroom_name" : chatroom_name.chatroom_name})
+            payload.append(dict_pa)
         print (payload)
 
 
-        return jsonify({'chat_room_list': payload}), 201
+        return jsonify({'chatroom_list': payload}), 201
     #except (MissingModelFields) as e:
        #return jsonify({ 'message': e.args }), 400
     except exc.IntegrityError as e:
@@ -161,18 +167,24 @@ def get_chatroom_list():
 @api.route('chat/get-chatroom-messages', methods=('GET',))
 def get_chatroom_messages():
     """
-    Create new chat room between two users
+    Create new chat chatroom between two users
     """
     try:
         data = request.get_json()
-        chat_messages = ChatMessages.query.filter_by(room_id = data['room_id']).all()
+        chat_messages = ChatMessages.query.filter_by(chatroom_id = data['chatroom_id']).all()
         payload = []
         for c in chat_messages:
-            payload.append(c.columns_to_dict())
+            user_name = User.query.filter_by(user_id = c.user_id).first()
+            print(user_name.last_name)
+            dict_column = c.columns_to_dict()
+            dict_column.pop('chatroom_id')
+            dict_column.update({"first_name" : user_name.first_name})
+            dict_column.update({"last_name" : user_name.last_name})
+            payload.append(dict_column)
         print (payload)
 
 
-        return jsonify({'chat_room_messages': payload}), 201
+        return jsonify({'chatroom_messages': payload}), 201
     #except (MissingModelFields) as e:
        #return jsonify({ 'message': e.args }), 400
     except exc.IntegrityError as e:

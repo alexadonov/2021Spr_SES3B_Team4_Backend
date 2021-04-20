@@ -184,13 +184,13 @@ class Resource(db.Model):
 class ChatRoom(db.Model):
     __tablename__ = 'chat_rooms'
 
-    room_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    room_name = db.Column(db.String(500), nullable=False)
+    chatroom_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    chatroom_name = db.Column(db.String(500), nullable=False)
     
     def to_dict(self):
         return {
-            'room_id':self.room_id,
-            'room_name':self.room_name
+            'chatroom_id':self.chatroom_id,
+            'chatroom_name':self.chatroom_name
         }
 
 class ChatParticipants(db.Model):
@@ -198,7 +198,7 @@ class ChatParticipants(db.Model):
 
     participant_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id', ondelete='CASCADE'))
-    chat_id = db.Column(db.Integer, db.ForeignKey('chat_rooms.room_id', ondelete='CASCADE'))
+    chat_id = db.Column(db.Integer, db.ForeignKey('chat_rooms.chatroom_id', ondelete='CASCADE'))
 
     def to_dict(self):
         return{
@@ -218,7 +218,7 @@ class ChatMessages(db.Model):
     __tablename__ = 'chat_messages'
 
     message_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    room_id = db.Column(db.Integer, db.ForeignKey('chat_rooms.room_id', ondelete='CASCADE'))
+    chatroom_id = db.Column(db.Integer, db.ForeignKey('chat_rooms.chatroom_id', ondelete='CASCADE'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id', ondelete='CASCADE'))
     message = db.Column(db.String(500), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
@@ -226,7 +226,7 @@ class ChatMessages(db.Model):
     def to_dict(self):
         return {
             'message_id':self.message_id,
-            'room_id':self.room_id,
+            'chatroom_id':self.chatroom_id,
             'user_id':self.user_id,
             'message':self.message
             }
