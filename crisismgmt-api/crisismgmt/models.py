@@ -111,7 +111,7 @@ class Event(db.Model):
     is_active = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id', ondelete='CASCADE'))
 
-    def __init__(self, event_id, event_name, severity, event_type, location, user_id):
+    def __init__(self, event_name, severity, event_type, location, user_id):
         
         self.event_name = event_name
         self.severity = severity
@@ -134,12 +134,12 @@ class Node(db.Model):
     current_capacity = db.Column(db.Integer, nullable=False)
     event_id = db.Column(db.Integer, db.ForeignKey('event.event_id', ondelete='CASCADE'))
 
-    def __init__(self, node_id, node_name, max_capacity, current_capacity, event_id):
+    def __init__(self, node_name, max_capacity, current_capacity, event_id):
         self.node_id = node_id
         self.node_name = node_name
         self.node_type = node_type
         self.max_capacity = max_capacity
-        self.current_capacity = current_capacity
+        self.current_capacity = 0
         self.event_id = event_id
 
     #def to_dict(self):
