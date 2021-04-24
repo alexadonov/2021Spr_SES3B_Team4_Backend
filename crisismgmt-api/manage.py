@@ -8,7 +8,7 @@ from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 
 from crisismgmt.application import create_app
-from crisismgmt.models import db, User, Circuit
+from crisismgmt.models import db, User, ContactList, Event, Node, HelpDoc, ResourceList, Resource, ChatRoom, ChatParticipants, ChatMessages
 
 app = create_app()
 
@@ -24,7 +24,15 @@ def shell_ctx():
     return dict(app=app,
                 db=db,
                 User=User,
-                Circuit=Circuit
+                ContactList=ContactList,
+                Event=Event,
+                Node=Node,
+                HelpDoc=HelpDoc,
+                ResourceList=ResourceList,
+                Resource=Resource,
+                ChatRoom=ChatRoom,
+                ChatParticipants=ChatParticipants,
+                ChatMessages=ChatMessages
                )
 
 if __name__ == '__main__':
