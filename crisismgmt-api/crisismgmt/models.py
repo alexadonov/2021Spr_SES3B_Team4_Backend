@@ -31,10 +31,9 @@ class User(db.Model):
     location = db.Column(db.String(255), nullable=False)
     created_date = db.Column(db.DateTime, default=datetime.utcnow)
     updated_date = db.Column(db.DateTime, default=datetime.utcnow)
+    contact_number = db.Column(db.String(255), nullable=False)
 
-    contact_list = db.relationship("ContactList", backref="users", cascade='all, delete')
-
-    def __init__(self, is_authority, first_name, last_name, email, password):
+    def __init__(self, is_authority, first_name, last_name, email, password, contact_number):
         self.is_authority = is_authority
         self.first_name = first_name
         self.last_name = last_name
@@ -42,6 +41,7 @@ class User(db.Model):
         self.password = generate_password_hash(password, method='sha256')
         self.status = 'null'
         self.location = 'location'
+        self.contact_number = contact_number
     
     @classmethod
     def authenticate(cls, **kwargs):
@@ -83,15 +83,15 @@ class User(db.Model):
 class ContactList(db.Model):
     __tablename__ = 'contact_list'
     contact_list_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = user_id = db.Column(db.Integer, db.ForeignKey('users.user_id', ondelete='CASCADE'))
-    contact_list = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id', ondelete='CASCADE'))
+    contact_user_id = db.Column(db.Integer, db.ForeignKey('users.user_id', ondelete='CASCADE'))
     
     
 
-    def __init__(self, contact_list_id, contact_list):
+    def __init__(self, contact_list_id, contact_user_id):
         self.contact_list_id = contact_list_id
         self.user_id = user_id
-        self.contact_list = contact_list
+        self.contact_list = contact_user_id
     
 
     #def to_dict(self):
@@ -106,15 +106,19 @@ class Event(db.Model):
     event_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     event_name = db.Column(db.String(500), nullable=False)
     severity = db.Column(db.String(191), nullable=False)
-    resource_list_id = db.Column(db.Integer, nullable=False)
-    help_doc_id = db.Column(db.Integer, nullable=False)
+    event_type = db.Column(db.String(191), nullable=False)
+    location = db.Column(db.String(191), nullable=False)
+    is_active = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id', ondelete='CASCADE'))
 
-    def __init__(self, event_id, event_name, severity, resource_list_id, help_doc_id):
-        self.event_id = event_id
+    def __init__(self, event_id, event_name, severity, event_type, location, user_id):
+        
         self.event_name = event_name
         self.severity = severity
-        self.resource_list_id = resource_list_id
-        self.help_doc_id = help_doc_id
+        self.event_type = event_type
+        self.location = location
+        self.is_active = 1
+        self.user_id = user_id
 
     #def to_dict(self):
 
@@ -126,17 +130,17 @@ class Node(db.Model):
     node_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     node_name = db.Column(db.String(500), nullable=False)
     node_location = db.Column(db.String(500), nullable=False)
-    node_type = db.Column(db.String(500), nullable=False)
     max_capacity = db.Column(db.Integer, nullable=False)
     current_capacity = db.Column(db.Integer, nullable=False)
+    event_id = db.Column(db.Integer, db.ForeignKey('event.event_id', ondelete='CASCADE'))
 
-    def __init__(self, node_id, node_name, node_location, node_type, max_capacity, current_capacity):
+    def __init__(self, node_id, node_name, max_capacity, current_capacity, event_id):
         self.node_id = node_id
         self.node_name = node_name
-        self.node_location = node_location
         self.node_type = node_type
         self.max_capacity = max_capacity
         self.current_capacity = current_capacity
+        self.event_id = event_id
 
     #def to_dict(self):
 
@@ -145,10 +149,11 @@ class HelpDoc(db.Model):
 
     help_doc_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     content_url = db.Column(db.String(500), nullable=False)
-
-    def __init__(self, help_doc_id, content_url):
+    event_type = db.Column(db.String(191), nullable=False)
+    def __init__(self, help_doc_id, content_url, event_type):
         this.help_doc_id = help_doc_id
         this.content_url = content_url
+        this.event_type = event_type
 
     #def to_dict(self):
 
@@ -156,12 +161,11 @@ class ResourceList:
     __tablename__ = 'resource_list'
 
     resource_list_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    event_id = db.Column(db.Integer, nullable=False)
-    resource_id = db.Column(db.Integer, nullable=False)
+    event_type = db.Column(db.String(500), nullable=False)
+    
 
-    def __init__(self, resource_list_id, event_id, resource_id):
-        this.resource_list_id = resource_list_id
-        this.event_id = event_id
+    def __init__(self, event_type):
+        this.event_id = event_type
         this.resource_id = resource_id
 
     #def to_dict(self):
@@ -172,12 +176,12 @@ class Resource(db.Model):
 
     resource_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     resource_name = db.Column(db.String(500), nullable=False)
-    resource_quantity = db.Column(db.Integer, nullable=False)
+    resource_multiplier = db.Column(db.Integer, nullable=False)
 
-    def __init__(resource_id, resource_name, resource_quantity):
-        this.resource_id = resource_id
+    def __init__(resource_name, resource_quantity, resource_multiplier):
         this.resource_name = resource_name
         this.resource_quantity = resource_quantity
+        this.resource_multiplier = resource_multiplier
 
     #def to_dict(self):
 
