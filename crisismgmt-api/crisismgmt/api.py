@@ -11,7 +11,7 @@ from sqlalchemy import exc
 from sqlalchemy import inspect
 from functools import wraps
 from .models import db, User, ContactList, Event, Node, HelpDoc, ResourceList, Resource, ChatRoom, ChatParticipants, ChatMessages, required_fields
-from .services.misc import pre_init_check, MissingModelFields, datetime_to_str, parse_datetime
+from .services.misc import pre_init_check, MissingModelFields, datetime_to_str, parse_datetime, poly_pos
 import jwt
 import pymysql
 pymysql.install_as_MySQLdb()
