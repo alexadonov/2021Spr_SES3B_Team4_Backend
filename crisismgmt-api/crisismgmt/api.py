@@ -8,8 +8,9 @@ from flask import Blueprint, jsonify, request, make_response, current_app
 from flask_cors import CORS, cross_origin
 from datetime import datetime, timedelta
 from sqlalchemy import exc
+from sqlalchemy import inspect
 from functools import wraps
-from .models import db, User, required_fields, ContactList
+from .models import db, User, ContactList, Event, Node, HelpDoc, ResourceList, Resource, ChatRoom, ChatParticipants, ChatMessages, required_fields
 from .services.misc import pre_init_check, MissingModelFields, datetime_to_str, parse_datetime
 import jwt
 # import pymysql
@@ -126,6 +127,60 @@ def toggle_location_permission():
         return jsonify({ 'message': e.args }), 500      
                    
   
+@api.route('/maps/get_events', methods=('GET', ))
+def get_events():
+    """
+    Returns a list of all active events and all associated nodes
+    """
+    try:
+        data = request.get_json()
+        payload = []
+        results_query = db.session.query(Event).join(Node).filter(Event.is_active == 1)
+        for e in results_query:
+            payload.append({
+                'event_id': e.event_id,
+                'event_name': e.event_name,
+                'is_active': e.is_active
+            })
+        return jsonify({'Active Events':payload}), 200
+       
+    except MissingModelFields as e:
+        return jsonify({ 'message': e.args }), 400
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
+    except Exception as e:
+        print(traceback.format_exc())
+        return jsonify({ 'message': e.args }), 500
+
+@api.route('/maps/get_civilian_locations', methods=('GET', ))
+def get_civilian_locations():
+    """
+    Returns all civilian locations
+    """
+    try:
+        data = request.get_json()
+        payload = []
+        results = User.query.filter_by(is_authority = 0).all()
+
+        for u in results:
+            payload.append({
+                'user_id': u.user_id,
+                'first_name': u.first_name, 
+                'last_name': u.last_name,
+                'location': u.location
+            })
+        return jsonify({'Civilian location':payload}), 200
+
+    except MissingModelFields as e:
+        return jsonify({ 'message': e.args }), 400
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
+    except Exception as e:
+        print(traceback.format_exc())
+        return jsonify({ 'message': e.args }), 500
+
 # This is a decorator function which will be used to protect authentication-sensitive API endpoints
 def token_required(f):
     @wraps(f)
@@ -158,3 +213,10 @@ def token_required(f):
             return jsonify(invalid_msg), 401
 
     return _verify
+
+#converts a resultproxy object type to dict
+def object_as_dict(obj):
+    return {c.key: getattr(obj, c.key)
+            for c in inspect(obj).mapper.column_attrs}
+
+
