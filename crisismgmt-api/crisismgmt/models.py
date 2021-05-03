@@ -120,7 +120,15 @@ class Event(db.Model):
         self.is_active = 1
         self.user_id = user_id
 
-    #def to_dict(self):
+    def to_dict(self):
+        return {
+            'event_name':self.event_name,
+            'severity':self.severity,
+            'event_type':self.event_type,
+            'location':self.location,
+            'is_active':self.is_active,
+            'user_id':self.user_id
+        }
 
 
 
