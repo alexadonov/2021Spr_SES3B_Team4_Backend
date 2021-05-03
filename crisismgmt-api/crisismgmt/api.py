@@ -195,6 +195,26 @@ def get_chatroom_messages():
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
 
+@api.route('/help-doc', methods=('POST',))
+def getHelpDoc():
+    """
+    Get help docs
+    """
+    try:
+        data = request.get_json()
+
+        helpDoc = HelpDoc(**data)
+        db.session.add(helpDoc)
+        db.session.commit()
+        return jsonify(user.to_dict()), 201
+    except exc.IntegrityError as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({ 'message': 'integrity errror' }), 409
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
+
 # This is a decorator function which will be used to protect authentication-sensitive API endpoints
 def token_required(f):
     @wraps(f)

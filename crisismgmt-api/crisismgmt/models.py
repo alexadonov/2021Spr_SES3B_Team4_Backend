@@ -150,12 +150,18 @@ class HelpDoc(db.Model):
     help_doc_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     content_url = db.Column(db.String(500), nullable=False)
     event_type = db.Column(db.String(191), nullable=False)
+
     def __init__(self, help_doc_id, content_url, event_type):
         this.help_doc_id = help_doc_id
         this.content_url = content_url
         this.event_type = event_type
 
-    #def to_dict(self):
+    def to_dict(self):
+        return {
+            'help_doc_id':self.help_doc_id,
+            'content_url':self.content_url,
+            'event_type': self.event_type
+        }
 
 class ResourceList:
     __tablename__ = 'resource_list'
