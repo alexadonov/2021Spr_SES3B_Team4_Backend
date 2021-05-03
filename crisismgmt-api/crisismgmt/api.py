@@ -233,4 +233,23 @@ def object_as_dict(obj):
     return {c.key: getattr(obj, c.key)
             for c in inspect(obj).mapper.column_attrs}
 
+@api.route('/create-event', methods=('POST',))
+def createEvent():
+    """
+    Register new event
+    """
+    try:
+        data = request.get_json()
+        event = Event(**data)
+        db.session.add(event)
+        db.session.commit()
+        return jsonify(event.to_dict()), 201
 
+        
+    except exc.IntegrityError as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({ 'message': 'Event with name {} exists.'.format(data['event_name']) }), 409
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
