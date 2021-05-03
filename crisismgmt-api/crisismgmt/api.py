@@ -74,57 +74,57 @@ def login():
 
  
 
-@api.route('/maps/filter', methods=('POST', 'GET'))
-def get_safe_locations():
-    # Get the nodeID for all nodes, then return if that node is safe or not. This should be under the Zone
-    # table which isn't done yet
+# @api.route('/maps/filter', methods=('POST', 'GET'))
+# def get_safe_locations():
+#     # Get the nodeID for all nodes, then return if that node is safe or not. This should be under the Zone
+#     # table which isn't done yet
     
-    try:
-        data = request.get_json();
-        locations = [];
-        # latitude = request.args.get('latitude', default=0, type=float)
-        # longitude = request.args.get('longitude', default=0, type=float)
-        # Getting the Node ID of safe and unsafe zones
-        safe = Zone.query.filter_by(nodeID = data['nodeID'], safety = 'Y')
-        unsafe = Zone.query.filter_by(nodeID = data['nodeID'],safety = 'N')     
-        # is_safe = request.args.get('is_safe', default=0, type=int)
-        # not_safe = request.args.get('not_safe', default=0, type=int)
+#     try:
+#         data = request.get_json();
+#         locations = [];
+#         # latitude = request.args.get('latitude', default=0, type=float)
+#         # longitude = request.args.get('longitude', default=0, type=float)
+#         # Getting the Node ID of safe and unsafe zones
+#         safe = Zone.query.filter_by(nodeID = data['nodeID'], safety = 'Y')
+#         unsafe = Zone.query.filter_by(nodeID = data['nodeID'],safety = 'N')     
+#         # is_safe = request.args.get('is_safe', default=0, type=int)
+#         # not_safe = request.args.get('not_safe', default=0, type=int)
 
-        #Appending safe and unsafe
-        locations.append({'safe': safe})
-        locations.append({'unsafe': unsafe})
-        db.session.commit()
+#         #Appending safe and unsafe
+#         locations.append({'safe': safe})
+#         locations.append({'unsafe': unsafe})
+#         db.session.commit()
 
-        #Return array 
-        payload = {'locations': locations };
-        return jsonify(payload), 200; 
+#         #Return array 
+#         payload = {'locations': locations };
+#         return jsonify(payload), 200; 
 
-    except (Exception, exc.SQLAlchemyError) as e:
-        return jsonify({ 'message': e.args }), 500
+#     except (Exception, exc.SQLAlchemyError) as e:
+#         return jsonify({ 'message': e.args }), 500
 
 
-@api.route('/maps/toggle', methods=('POST', ))
-def toggle_location_permission():
-    """
-    Location permissions
-    """
-    # Maybe here have some user authentication here later
-    try:
-        data = request.get_json();
-        # location = request.args.get('location', default = None)
-        location_on = User.query.filter_by(location = data['location']).first()  
+# @api.route('/maps/toggle', methods=('POST', ))
+# def toggle_location_permission():
+#     """
+#     Location permissions
+#     """
+#     # Maybe here have some user authentication here later
+#     try:
+#         data = request.get_json();
+#         # location = request.args.get('location', default = None)
+#         location_on = User.query.filter_by(location = data['location']).first()  
        
-        if location_on:
-            # contact_list = data['contact_list']
-            # is_authority = data['is_authority']
-            ContactList.query.filter_by(is_authority = data['is_authority']).delete()
-            db.session.commit()
-        else: 
-            # Raise exception
-            raise Exception('Location is already off')
+#         if location_on:
+#             # contact_list = data['contact_list']
+#             # is_authority = data['is_authority']
+#             ContactList.query.filter_by(is_authority = data['is_authority']).delete()
+#             db.session.commit()
+#         else: 
+#             # Raise exception
+#             raise Exception('Location is already off')
 
-    except (Exception, exc.SQLAlchemyError) as e:
-        return jsonify({ 'message': e.args }), 500      
+#     except (Exception, exc.SQLAlchemyError) as e:
+#         return jsonify({ 'message': e.args }), 500      
                    
   
 @api.route('/maps/get_events', methods=('GET', ))
@@ -136,10 +136,13 @@ def get_events():
         data = request.get_json()
         payload = []
         results_query = db.session.query(Event).join(Node).filter(Event.is_active == 1)
-        for e in results_query:
+
+        for e, n in results_query:
             payload.append({
                 'event_id': e.event_id,
                 'event_name': e.event_name,
+                # 'node_id': n.node_id,
+                # 'node_name': n.node_name,
                 'is_active': e.is_active
             })
         return jsonify({'Active Events':payload}), 200
@@ -162,13 +165,17 @@ def get_civilian_locations():
         data = request.get_json()
         payload = []
         results = User.query.filter_by(is_authority = 0).all()
-
+        # loc = User.query.filter_by(location = data['location'], is_authority = 0).all()
+        
         for u in results:
+            latitude, longitude = (u.location).split(", ")
             payload.append({
                 'user_id': u.user_id,
                 'first_name': u.first_name, 
                 'last_name': u.last_name,
-                'location': u.location
+                # 'location': (u.location)
+                'latitude': latitude,
+                'longitude': longitude
             })
         return jsonify({'Civilian location':payload}), 200
 
