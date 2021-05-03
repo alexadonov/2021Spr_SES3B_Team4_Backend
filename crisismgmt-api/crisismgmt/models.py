@@ -150,7 +150,15 @@ class Node(db.Model):
         self.current_capacity = 0
         self.event_id = event_id
 
-    #def to_dict(self):
+    def to_dict(self):
+        return{
+            'node_id':self.node_id,
+            'node_name':self.node_name,
+            'node_type':self.node_type,
+            'max_capacity':self.max_capacity,
+            'current_capacity':self.current_capacity,
+            'event_id':self.event_id
+        }
 
 class HelpDoc(db.Model):
     __tablename__ = 'help_doc'
