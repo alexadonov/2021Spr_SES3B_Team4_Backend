@@ -253,3 +253,24 @@ def createEvent():
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
+
+@api.route('/create-node', methods=('POST',))
+def createNode():
+    """
+    Register new node
+    """
+    try:
+        data = request.get_json()
+        node = Node(**data)
+        db.session.add(node)
+        db.session.commit()
+        return jsonify(node.to_dict()), 201
+
+        
+    except exc.IntegrityError as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({ 'message': 'Node with name {} exists.'.format(data['node_name']) }), 409
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
