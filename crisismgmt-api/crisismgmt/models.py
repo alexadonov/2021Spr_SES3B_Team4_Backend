@@ -122,6 +122,7 @@ class Event(db.Model):
 
     def to_dict(self):
         return {
+            'event_id':self.event_id,
             'event_name':self.event_name,
             'severity':self.severity,
             'event_type':self.event_type,

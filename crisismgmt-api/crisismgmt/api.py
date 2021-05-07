@@ -244,15 +244,59 @@ def createEvent():
         event = Event(**data)
         db.session.add(event)
         db.session.commit()
-        return jsonify(event.to_dict()), 201
+        return jsonify({'message' : 'Event created', 'event' : event.to_dict()}), 201
 
-        
-    except exc.IntegrityError as e:
-        print(e)
-        db.session.rollback()
-        return jsonify({ 'message': 'Event with name {} exists.'.format(data['event_name']) }), 409
     except exc.SQLAlchemyError as e:
         db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
+
+@api.route('/edit-event', methods=('POST',))
+def editEvent():
+    """
+    edit existing event
+    """
+    try:
+        data = request.get_json()
+        event = Event.query.filter_by(event_id=data['event_id']).first()
+        event.event_name = data['event_name']
+        event.severity = data['severity']
+        event.event_type = data['event_type']
+        event.location = data['location']
+        event.user_id = data['user_id']
+
+        db.session.commit()
+        return jsonify({'message' : 'Event updated', 'event' : event.to_dict()}), 201
+        
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
+
+@api.route('/get_event', methods=('GET', ))
+def getEvent():
+    """
+    Returns a list of all active events and all associated nodes
+    """
+    try:
+        data = request.get_json()
+        payload = []
+        results_query = db.session.query(Event).join(Node).filter(Event.is_active == 1)
+
+        for e, n in results_query:
+            payload.append({
+                'event_id': e.event_id,
+                'event_name': e.event_name,
+                # 'node_id': n.node_id,
+                # 'node_name': n.node_name,
+                'is_active': e.is_active
+            })
+        return jsonify({'Active Events':payload}), 200
+       
+    except MissingModelFields as e:
+        return jsonify({ 'message': e.args }), 400
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
+    except Exception as e:
         return jsonify({ 'message': e.args }), 500
 
 @api.route('/create-node', methods=('POST',))
