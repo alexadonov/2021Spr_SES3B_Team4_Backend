@@ -145,7 +145,7 @@ class Node(db.Model):
     def __init__(self, node_name, max_capacity, current_capacity, event_id):
         self.node_id = node_id
         self.node_name = node_name
-        self.node_type = node_type
+        self.node_location = node_location
         self.max_capacity = max_capacity
         self.current_capacity = 0
         self.event_id = event_id
@@ -154,7 +154,7 @@ class Node(db.Model):
         return{
             'node_id':self.node_id,
             'node_name':self.node_name,
-            'node_type':self.node_type,
+            'node_location':self.node_location,
             'max_capacity':self.max_capacity,
             'current_capacity':self.current_capacity,
             'event_id':self.event_id
