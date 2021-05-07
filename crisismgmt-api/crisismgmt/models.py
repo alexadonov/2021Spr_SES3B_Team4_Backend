@@ -142,7 +142,7 @@ class Node(db.Model):
     current_capacity = db.Column(db.Integer, nullable=False)
     event_id = db.Column(db.Integer, db.ForeignKey('event.event_id', ondelete='CASCADE'))
 
-    def __init__(self, node_name, max_capacity, current_capacity, event_id):
+    def __init__(self, node_name, node_location, max_capacity, current_capacity, event_id):
         self.node_id = node_id
         self.node_name = node_name
         self.node_location = node_location
