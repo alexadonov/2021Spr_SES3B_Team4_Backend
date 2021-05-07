@@ -120,7 +120,15 @@ class Event(db.Model):
         self.is_active = 1
         self.user_id = user_id
 
-    #def to_dict(self):
+    def to_dict(self):
+        return {
+            'event_name':self.event_name,
+            'severity':self.severity,
+            'event_type':self.event_type,
+            'location':self.location,
+            'is_active':self.is_active,
+            'user_id':self.user_id
+        }
 
 
 
@@ -134,15 +142,21 @@ class Node(db.Model):
     current_capacity = db.Column(db.Integer, nullable=False)
     event_id = db.Column(db.Integer, db.ForeignKey('event.event_id', ondelete='CASCADE'))
 
-    def __init__(self, node_name, max_capacity, current_capacity, event_id):
-        self.node_id = node_id
+    def __init__(self, node_name, node_location, max_capacity, current_capacity, event_id):
         self.node_name = node_name
-        self.node_type = node_type
+        self.node_location = node_location
         self.max_capacity = max_capacity
         self.current_capacity = 0
         self.event_id = event_id
 
-    #def to_dict(self):
+    def to_dict(self):
+        return{
+            'node_name':self.node_name,
+            'node_location':self.node_location,
+            'max_capacity':self.max_capacity,
+            'current_capacity':self.current_capacity,
+            'event_id':self.event_id
+        }
 
 class HelpDoc(db.Model):
     __tablename__ = 'help_doc'

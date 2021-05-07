@@ -232,3 +232,46 @@ def token_required(f):
 def object_as_dict(obj):
     return {c.key: getattr(obj, c.key)
             for c in inspect(obj).mapper.column_attrs}
+
+
+@api.route('/create-event', methods=('POST',))
+def createEvent():
+    """
+    Register new event
+    """
+    try:
+        data = request.get_json()
+        event = Event(**data)
+        db.session.add(event)
+        db.session.commit()
+        return jsonify(event.to_dict()), 201
+
+        
+    except exc.IntegrityError as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({ 'message': 'Event with name {} exists.'.format(data['event_name']) }), 409
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
+
+@api.route('/create-node', methods=('POST',))
+def createNode():
+    """
+    Register new node
+    """
+    try:
+        data = request.get_json()
+        node = Node(**data)
+        db.session.add(node)
+        db.session.commit()
+        return jsonify(node.to_dict()), 201
+
+        
+    except exc.IntegrityError as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({ 'message': 'Node with name {} exists.'.format(data['node_name']) }), 409
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
