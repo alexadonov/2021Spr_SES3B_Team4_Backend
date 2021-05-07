@@ -58,7 +58,7 @@ def login():
 
     if not user:
         return jsonify({ 'message': 'Invalid credentials', 'authenticated': False }), 401
-    
+
     token = jwt.encode(
         {
         'exp': datetime.now() + timedelta(minutes=90),
@@ -133,7 +133,7 @@ def save_message():
         return jsonify({ 'message': e.args }), 500
 
 
-@api.route('chat/get-chatroom-list', methods=('GET',))
+@api.route('chat/get-chatroom-list', methods=('POST',))
 def get_chatroom_list():
     """
     Create new chat chatroom between two users
@@ -164,7 +164,7 @@ def get_chatroom_list():
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
 
-@api.route('chat/get-chatroom-messages', methods=('GET',))
+@api.route('chat/get-chatroom-messages', methods=('POST',))
 def get_chatroom_messages():
     """
     Create new chat chatroom between two users
@@ -232,5 +232,3 @@ def token_required(f):
 def object_as_dict(obj):
     return {c.key: getattr(obj, c.key)
             for c in inspect(obj).mapper.column_attrs}
-
-
