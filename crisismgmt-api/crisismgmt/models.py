@@ -130,6 +130,12 @@ class Event(db.Model):
             'is_active':self.is_active,
             'user_id':self.user_id
         }
+    
+    def columns_to_dict(self):
+        dict_ = {}
+        for key in self.__mapper__.c.keys():
+            dict_[key] = getattr(self, key)
+        return dict_
 
 
 

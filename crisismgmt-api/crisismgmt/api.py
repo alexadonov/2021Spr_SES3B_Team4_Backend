@@ -271,32 +271,42 @@ def editEvent():
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
 
-@api.route('/get_event', methods=('GET', ))
-def getEvent():
+@api.route('/delete-event', methods=('POST',))
+def deleteEvent():
     """
-    Returns a list of all active events and all associated nodes
+    delete existing event, need event_id
     """
     try:
         data = request.get_json()
-        payload = []
-        results_query = db.session.query(Event).join(Node).filter(Event.is_active == 1)
-
-        for e, n in results_query:
-            payload.append({
-                'event_id': e.event_id,
-                'event_name': e.event_name,
-                # 'node_id': n.node_id,
-                # 'node_name': n.node_name,
-                'is_active': e.is_active
-            })
-        return jsonify({'Active Events':payload}), 200
-       
-    except MissingModelFields as e:
-        return jsonify({ 'message': e.args }), 400
+        event = Event.query.filter_by(event_id=data['event_id']).first()
+        db.session.delete(event)
+        db.session.commit()
+        return jsonify({'message' : 'Event delete'}), 201
+        
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
-    except Exception as e:
+
+@api.route('/get_event', methods=('GET', ))
+def getEvent():
+    """
+    Returns a list of all active events
+    """
+    try:
+        # data = request.get_json()
+        eventlist = Event.query.filter_by(is_active = 1).all()
+        payload = []
+        for i in eventlist:
+            event = i.columns_to_dict()
+            payload.append(event)
+        return jsonify({'Active Events' : payload}), 200
+       
+    except exc.IntegrityError as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({ 'message': 'integrity errror' }), 409
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
         return jsonify({ 'message': e.args }), 500
 
 @api.route('/create-node', methods=('POST',))
