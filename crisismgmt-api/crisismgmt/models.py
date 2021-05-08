@@ -158,12 +158,19 @@ class Node(db.Model):
 
     def to_dict(self):
         return{
+            'node_id':self.node_id,
             'node_name':self.node_name,
             'node_location':self.node_location,
             'max_capacity':self.max_capacity,
             'current_capacity':self.current_capacity,
             'event_id':self.event_id
         }
+    
+    def columns_to_dict(self):
+        dict_ = {}
+        for key in self.__mapper__.c.keys():
+            dict_[key] = getattr(self, key)
+        return dict_
 
 class HelpDoc(db.Model):
     __tablename__ = 'help_doc'
