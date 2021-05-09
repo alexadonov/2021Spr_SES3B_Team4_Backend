@@ -237,20 +237,86 @@ def object_as_dict(obj):
 @api.route('/create-event', methods=('POST',))
 def createEvent():
     """
-    Register new event
+    Register a new event
     """
     try:
         data = request.get_json()
         event = Event(**data)
         db.session.add(event)
         db.session.commit()
-        return jsonify(event.to_dict()), 201
+        return jsonify({'message' : 'Event created', 'event' : event.to_dict()}), 201
 
-        
     except exc.IntegrityError as e:
         print(e)
         db.session.rollback()
-        return jsonify({ 'message': 'Event with name {} exists.'.format(data['event_name']) }), 409
+        return jsonify({ 'message': 'User Not Found'.format(data['user_id']) }), 409
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
+
+@api.route('/edit-event', methods=('POST',))
+def editEvent():
+    """
+    edit an existing event by event_id
+    """
+    try:
+        data = request.get_json()
+        event = Event.query.filter_by(event_id=data['event_id']).first()
+        if event:
+            event.event_name = data['event_name']
+            event.severity = data['severity']
+            event.event_type = data['event_type']
+            event.location = data['location']
+            event.user_id = data['user_id']
+
+            db.session.commit()
+            return jsonify({'message' : 'Event updated', 'event' : event.to_dict()}), 201
+        else: 
+            db.session.rollback()
+            return jsonify({ 'message': 'Event Not Found.'}), 409
+
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
+
+@api.route('/delete-event', methods=('POST',))
+def deleteEvent():
+    """
+    delete an existing event by event_id
+    """
+    try:
+        data = request.get_json()
+        event = Event.query.filter_by(event_id=data['event_id']).first()
+        if event:
+            db.session.delete(event)
+            db.session.commit()
+            return jsonify({'message' : 'Event delete'}), 201
+        else: 
+            db.session.rollback()
+            return jsonify({ 'message': 'Event Not Found.'}), 409
+
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
+
+@api.route('/get_event', methods=('GET', ))
+def getEvent():
+    """
+    Returns a list of all active events
+    """
+    try:
+        # data = request.get_json()
+        eventlist = Event.query.filter_by(is_active = 1).all()
+        payload = []
+        for i in eventlist:
+            event = i.columns_to_dict()
+            payload.append(event)
+        return jsonify({'Active Events' : payload}), 200
+       
+    except exc.IntegrityError as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({ 'message': 'integrity errror' }), 409
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
@@ -258,20 +324,86 @@ def createEvent():
 @api.route('/create-node', methods=('POST',))
 def createNode():
     """
-    Register new node
+    Register a new node
     """
     try:
         data = request.get_json()
         node = Node(**data)
         db.session.add(node)
         db.session.commit()
-        return jsonify(node.to_dict()), 201
-
+        return jsonify({'message' : 'Node created', 'node' : node.to_dict()}), 201
         
     except exc.IntegrityError as e:
         print(e)
         db.session.rollback()
-        return jsonify({ 'message': 'Node with name {} exists.'.format(data['node_name']) }), 409
+        return jsonify({ 'message': 'Event Not Found.'.format(data['event_id']) }), 409
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
+
+@api.route('/edit-node', methods=('POST',))
+def editNode():
+    """
+    edit an existing node by node_id
+    """
+    try:
+        data = request.get_json()
+        node = Node.query.filter_by(node_id=data['node_id']).first()
+        if node:
+            node.node_name = data['node_name']
+            node.node_location = data['node_location']
+            node.max_capacity = data['max_capacity']
+            node.current_capacity = 0
+            node.event_id = data['event_id']
+
+            db.session.commit()
+            return jsonify({'message' : 'Node updated', 'node' : node.to_dict()}), 201
+        else: 
+            db.session.rollback()
+            return jsonify({ 'message': 'Node Not Found.'}), 409  
+
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
+
+@api.route('/delete-node', methods=('POST',))
+def deleteNode():
+    """
+    delete an existing node by node_id
+    """
+    try:
+        data = request.get_json()
+        node = Node.query.filter_by(node_id=data['node_id']).first()
+        if node:
+            db.session.delete(node)
+            db.session.commit()
+            return jsonify({'message' : 'Node delete'}), 201
+        else: 
+            db.session.rollback()
+            return jsonify({ 'message': 'Node Not Found.'}), 409
+        
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
+
+@api.route('/get_node', methods=('GET', ))
+def getNode():
+    """
+    Returns a list of all existing nodes
+    """
+    try:
+        # data = request.get_json()
+        nodelist = Node.query.all()
+        payload = []
+        for i in nodelist:
+            node = i.columns_to_dict()
+            payload.append(node)
+        return jsonify({'Existing nodes' : payload}), 200
+       
+    except exc.IntegrityError as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({ 'message': 'integrity errror' }), 409
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
