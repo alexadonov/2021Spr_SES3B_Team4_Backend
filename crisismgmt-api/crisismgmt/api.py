@@ -470,7 +470,7 @@ def get_contacts():
         payload = []
         contacts = ContactList.query.filter_by(user_id = user_id).all()
         for c in contacts:
-            user = User.query.filter_by(user_id = c.user_id).first()
+            user = User.query.filter_by(user_id = c.contact_user_id).first()
             dict_column = user.columns_to_dict()
             dict_column.pop('password')
             dict_column.pop('created_date')
