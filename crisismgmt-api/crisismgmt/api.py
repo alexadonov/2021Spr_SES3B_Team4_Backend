@@ -461,8 +461,7 @@ def add_contacts():
 @api.route('/get-contacts', methods=('POST',))
 def get_contacts():
     """
-    Takes string with list of contact numbers like "0437263746, 4837473272", finds if user exisits with the phone
-    number and adds them as a contact
+    Returns all contacts associated with a user_id
     """
     try:
         data = request.get_json()
