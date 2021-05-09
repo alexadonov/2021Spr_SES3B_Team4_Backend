@@ -88,10 +88,9 @@ class ContactList(db.Model):
     
     
 
-    def __init__(self, contact_list_id, contact_user_id):
-        self.contact_list_id = contact_list_id
+    def __init__(self, user_id, contact_user_id):
         self.user_id = user_id
-        self.contact_list = contact_user_id
+        self.contact_user_id = contact_user_id
     
 
     #def to_dict(self):
