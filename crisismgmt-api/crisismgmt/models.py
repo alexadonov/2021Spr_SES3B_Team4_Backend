@@ -79,6 +79,12 @@ class User(db.Model):
             'is_authority': self.is_authority
         }
 
+    def columns_to_dict(self):
+        dict_ = {}
+        for key in self.__mapper__.c.keys():
+            dict_[key] = getattr(self, key)
+        return dict_
+
 
 class ContactList(db.Model):
     __tablename__ = 'contact_list'
@@ -93,10 +99,11 @@ class ContactList(db.Model):
         self.contact_user_id = contact_user_id
     
 
-    #def to_dict(self):
-        #return dict('contact_list_id':contact_list_id, 
-                    #'user_id': user_id,
-                    #'contact_list' : contact_list)
+    def columns_to_dict(self):
+        dict_ = {}
+        for key in self.__mapper__.c.keys():
+            dict_[key] = getattr(self, key)
+        return dict_
 
 
 class Event(db.Model):

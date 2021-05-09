@@ -299,7 +299,7 @@ def deleteEvent():
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
 
-@api.route('/get_event', methods=('GET', ))
+@api.route('/get_event', methods=('POST', ))
 def getEvent():
     """
     Returns a list of all active events
@@ -386,7 +386,7 @@ def deleteNode():
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
 
-@api.route('/get_node', methods=('GET', ))
+@api.route('/get_node', methods=('POST', ))
 def getNode():
     """
     Returns a list of all existing nodes
@@ -447,6 +447,37 @@ def add_contacts():
         
         return jsonify({'message' : " {} contacts passed.{} added, {} duplicates and {} not found".format(total_contacts, \
             contact_added, contact_exists, contact_not_found)}), 201
+        
+    except exc.IntegrityError as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({ 'message': 'integrity errror' }), 409
+        
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
+
+
+@api.route('/get-contacts', methods=('POST',))
+def get_contacts():
+    """
+    Takes string with list of contact numbers like "0437263746, 4837473272", finds if user exisits with the phone
+    number and adds them as a contact
+    """
+    try:
+        data = request.get_json()
+        user_id = data['user_id']
+        payload = []
+        contacts = ContactList.query.filter_by(user_id = user_id).all()
+        for c in contacts:
+            user = User.query.filter_by(user_id = c.user_id).first()
+            dict_column = user.columns_to_dict()
+            dict_column.pop('password')
+            dict_column.pop('created_date')
+            dict_column.pop('updated_date')
+            payload.append(dict_column)
+
+        return jsonify({'contact_list': payload}), 200
         
     except exc.IntegrityError as e:
         print(e)
