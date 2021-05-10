@@ -27,7 +27,7 @@ def upgrade():
     sa.Column('help_doc_id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('content_url', sa.String(length=500), nullable=False),
     sa.Column('event_type', sa.String(length=191), nullable=False),
-    sa.PrimaryKeyConstraint('help_doc_id'),
+    sa.PrimaryKeyConstraint('help_doc_id')
     )
     op.create_table('resource',
     sa.Column('resource_id', sa.Integer(), autoincrement=True, nullable=False),
