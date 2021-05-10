@@ -407,3 +407,35 @@ def getNode():
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
+      
+@api.route('/maps/get_civilian_locations', methods=('GET', ))
+def get_civilian_locations():
+    """
+    Returns all civilian locations
+    """
+    try:
+        data = request.get_json()
+        payload = []
+        results = User.query.filter_by(is_authority = 0).all()
+        # loc = User.query.filter_by(location = data['location'], is_authority = 0).all()
+        
+        for u in results:
+            latitude, longitude = (u.location).split(", ")
+            payload.append({
+                'user_id': u.user_id,
+                'first_name': u.first_name, 
+                'last_name': u.last_name,
+                # 'location': (u.location)
+                'latitude': latitude,
+                'longitude': longitude
+            })
+        return jsonify({'Civilian location':payload}), 200
+
+    except MissingModelFields as e:
+        return jsonify({ 'message': e.args }), 400
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
+    except Exception as e:
+        print(traceback.format_exc())
+        return jsonify({ 'message': e.args }), 500
