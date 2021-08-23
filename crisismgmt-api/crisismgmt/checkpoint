@@ -1,0 +1,2 @@
+model_checkpoint_path: "/Users/neeraj/Desktop/2021Spr_SES3B_Team4_Backend/crisismgmt-api/crisismgmt/model.tflearn"
+all_model_checkpoint_paths: "/Users/neeraj/Desktop/2021Spr_SES3B_Team4_Backend/crisismgmt-api/crisismgmt/model.tflearn"
