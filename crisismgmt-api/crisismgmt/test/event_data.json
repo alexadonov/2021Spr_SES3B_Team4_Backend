@@ -1,0 +1,10 @@
+[{"event_name": "BURST WATER MAIN", "event_type": "police", "location": "CHATSWOOD Millwood Avenue at Lady Game Drive", "is_active": 1, "radius": 41},
+{"event_name": "SCHEDULED ROADWORK", "event_type": "police", "location": "NORTH SYDNEY TO SYDNEY Cahill Expressway/Sydney Harbour Bridge", "is_active": 0, "radius": 27},
+{"event_name": "CHANGED TRAFFIC CONDITIONS Princes Highway lane configuration", "event_type": "police", "location": "BLAKEHURST Princes Highway between King Georges Road and Torrens Street", "is_active": 1, "radius": 8},
+{"event_name": "CHANGED TRAFFIC CONDITIONS Windsor Road lane configuration", "event_type": "police", "location": "NORTHMEAD Windsor Road", "is_active": 1, "radius": 46},
+{"event_name": "CHANGED TRAFFIC CONDITIONS Princes Highway lane configuration", "event_type": "police", "location": "ARNCLIFFE Princes Highway near Forest Road/Wickham Street", "is_active": 1, "radius": 45},
+{"event_name": "CHANGED TRAFFIC CONDITIONS Parramatta Light Rail", "event_type": "police", "location": "PARRAMATTA Macquarie Street between Smith Street and Horwood Place", "is_active": 1, "radius": 4},
+{"event_name": "SCHEDULED ROADWORK Utilities", "event_type": "police", "location": "NORTH SYDNEY Alfred Street North between Kurraba Road and Merlin Street", "is_active": 0, "radius": 38},
+{"event_name": "SCHEDULED ROADWORK WestConnex", "event_type": "police", "location": "ROZELLE Lilyfield Road at Victoria Road", "is_active": 0, "radius": 22},
+{"event_name": "CHANGED TRAFFIC CONDITIONS Damaged roads", "event_type": "police", "location": "HAWKESBURY CITY COUNCIL Local Roads", "is_active": 1, "radius": 12},
+{"event_name": "SCHEDULED ROADWORK", "event_type": "police", "location": "SYDNEY Pitt Street between Bridge Street and Curtin Place", "is_active": 0, "radius": 6}]
