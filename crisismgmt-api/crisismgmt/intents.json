@@ -1,55 +1,60 @@
 {"intents": [
-        {"tag": "greetings",
-                "patterns": ["hello","i need help", "how are you going", "how are you", "how are you doing"],
+        {"tag": "Greetings Part 1",
+         "patterns": ["hi", "is anyone there?", "hello", "whats up"],
 
-                "responses": ["hello","what can i help you with", "good to see you again!", "hi there, how can i help?",
-                "i am good. thanks for asking", "i am happy to be here", 
-                "not too shabby. thanks for asking"],
-                "context_set": ""
-        },
-
-        {"tag": "goodbye",
-         "patterns": ["cya", "see you later", "goodbye", "i am leaving", "have a good day"],
-         
-         "responses": ["Okay, nice talking with you", "Okay. i will hold down the fort", 
-                      "Thank you! i hope you have a nice day as well",
-        "See ya!", "Same to you!", "Sad to see you go :(", "Talk to you later", "Goodbye!"],
+         "responses": ["hi there", "hello there", "hi there, how can i help?", 
+         "how can i be of assistance today"],
          "context_set": ""
         },
 
-        {"tag": "age",
-         "patterns": ["how old", "what is your age", "how old are you", "age"],
 
-         "responses": ["well, i came into existence gradually. but my first day as an assistant was 30th August 2021!",
-        "I'm still pretty new. but i'm already crawling the web like a champ 👶"],
+        {"tag": "Greetings Part 2",
+        "patterns": ["how are you", "how are you going", "how are you doing","how are things"],
+
+        "responses": ["i am happy to be here", "not too shabby. thanks for asking", 
+        "i am great thank you for asking", "i am fine, thanks", "tops. every day is a beautifull day in life",
+        "i feel ready to help. Anything i can do for you"],
+        "context_set": ""
+        },
+
+
+        {"tag": "Goodbye",
+        "patterns": ["cya", "see you later", "goodbye", "i am leaving", "have a good day"],
+
+        "responses": ["okay, nice talking with you", "okay. i will hold down the fort", "thank you! i hope you have a nice day as well",
+        "see ya!", "same to you!"],
+         "context_set": ""
+        },
+
+
+        {"tag": "age",
+        "patterns": ["how old", "what is your age", "how old are you", "age?"],
+
+        "responses": ["well, i came into existence gradually. But my first day as an assistant was 30th August 2021!",
+        "i am still pretty new. but i am already crawling the web like a champ 👶"],
          "context_set": ""
         },
 
 
         {"tag": "name",
-         "patterns": ["what is your name", "what should i call you", "name"],
+        "patterns": ["what is your name", "what should I call you", "name?"],
 
-         "responses": ["i am axel. pleased to meet you", "my name is axel", 
-                      "i am axel!", "i am axel aka axel the bot.",
+        "responses": ["i am axel. pleased to meet you", "my name is axel", "i am axel!", "i am axel aka axel the Bot.",
         "i am axel, your emergecny assistant! i can be of help during an emergency and a buddy as well 😀",
         "axel is my family name, but my middle name is helpful 😊"],
          "context_set": ""
         },
 
-        {"tag": "shop",
-        "patterns": ["id like to ask for police", "i need the police", "i want the police",
-                     "i would like to request for police", "police"],
 
-        "responses": [ "ok got it. i will disspatch one of our police officer to your current location. can you please tell me what is happening?",
-                "police are on their way to your location. can you please tell me what is happening?", "police will be at your location asap. can you please tell me what is happening?", 
-                "police officer are coming to your location, please stay safe!. can you please tell me what is happening?"],
-        "context_set": ""
-        },
+        {"tag": "Emergency 1: Police",
+        "patterns": ["there is someone is my house", "the neighbor is punching someone in his front yard","police", "please send help", "contingency",
+        "crisis", "juncture", "pinch", "straits", "stait", "help", "gunshots", "assistacne", "urgent", 
+        "Protection", "Problem", "Issue", "Concern"],
 
-        {"tag": "hours",
-         "patterns": ["incident of operation", "shooting"],
-         "responses": ["i am sorry to hear. please move to a safe area, police on thier way!"],
+        "responses": ["ok got it. i will disspatch one of our police officer to your current location. can you please tell me what is happening?",
+        "police are on thier way to your location. can you please tell me what is happening?", "police will be at your location asap. can you please tell me what is happening?", 
+        "police officer are coming to your location, please stay safe!. can you please tell me what is happening?"],
          "context_set": ""
-        }
-]
+        }   
+   ]
 }
