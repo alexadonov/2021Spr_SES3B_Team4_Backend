@@ -1,15 +1,15 @@
 {"intents": [
-        {"tag": "greeting",
-                "patterns": ["hello?","i need help", "how are you going", "how are you", "how are you doing"],
+        {"tag": "greetings",
+                "patterns": ["hello","i need help", "how are you going", "how are you", "how are you doing"],
 
-                "responses": ["Hello!","what can i help you with", "Good to see you again!", "Hi there, How can I help?",
-                "I am good. Thanks for asking", "I am happy to be here", 
-                "Not too shabby. Thanks for asking"],
+                "responses": ["hello","what can i help you with", "good to see you again!", "hi there, how can i help?",
+                "i am good. thanks for asking", "i am happy to be here", 
+                "not too shabby. thanks for asking"],
                 "context_set": ""
         },
 
         {"tag": "goodbye",
-         "patterns": ["Cya", "See you later", "Goodbye", "I am Leaving", "Have a Good day"],
+         "patterns": ["cya", "see you later", "goodbye", "i am leaving", "have a good day"],
          
          "responses": ["Okay, nice talking with you", "Okay. i will hold down the fort", 
                       "Thank you! i hope you have a nice day as well",
@@ -18,37 +18,37 @@
         },
 
         {"tag": "age",
-         "patterns": ["How old", "How old is Axel", "What is your age", "How old are you", "Age?"],
+         "patterns": ["how old", "what is your age", "how old are you", "age"],
 
-         "responses": ["Well, i came into existence gradually. but my first day as an assistant was 30th August 2021!",
+         "responses": ["well, i came into existence gradually. but my first day as an assistant was 30th August 2021!",
         "I'm still pretty new. but i'm already crawling the web like a champ 👶"],
          "context_set": ""
         },
 
 
         {"tag": "name",
-         "patterns": ["What is your name", "What should I call you", "Name?"],
+         "patterns": ["what is your name", "what should i call you", "name"],
 
-         "responses": ["I am Axel. pleased to meet you", "My name is Axel", 
-                      "I am Axel!", "i am Axel aka Axel the bot.",
-        "i am Axel, your emergecny assistant! i can be of help during an emergency and a buddy as well 😀",
-        "Axel is my family name, but my middle name is helpful 😊"],
+         "responses": ["i am axel. pleased to meet you", "my name is axel", 
+                      "i am axel!", "i am axel aka axel the bot.",
+        "i am axel, your emergecny assistant! i can be of help during an emergency and a buddy as well 😀",
+        "axel is my family name, but my middle name is helpful 😊"],
          "context_set": ""
         },
 
         {"tag": "shop",
-        "patterns": ["Id like to ask for police", "i need the police", "i want the police",
-                     "I would like to request for police", "police"],
+        "patterns": ["id like to ask for police", "i need the police", "i want the police",
+                     "i would like to request for police", "police"],
 
-        "responses": [ "Ok Got it. I will disspatch one of our police officer to your current location. Can you please tell me what is happening?",
-                "Police are on thier way to your location.Can you please tell me what is happening?", "Police will be at your location ASAP. Can you please tell me what is happening?", 
-                "Police officer are coming to your location, please stay safe!. Can you please tell me what is happening?"],
+        "responses": [ "ok got it. i will disspatch one of our police officer to your current location. can you please tell me what is happening?",
+                "police are on their way to your location. can you please tell me what is happening?", "police will be at your location asap. can you please tell me what is happening?", 
+                "police officer are coming to your location, please stay safe!. can you please tell me what is happening?"],
         "context_set": ""
         },
 
         {"tag": "hours",
          "patterns": ["incident of operation", "shooting"],
-         "responses": ["I am sorry to hear. Please move to a safe area, police on thier way!"],
+         "responses": ["i am sorry to hear. please move to a safe area, police on thier way!"],
          "context_set": ""
         }
 ]

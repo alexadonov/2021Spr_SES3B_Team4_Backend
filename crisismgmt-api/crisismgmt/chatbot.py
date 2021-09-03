@@ -1,5 +1,6 @@
 from re import X
 import nltk
+from autocorrect import Speller
 from nltk import stem
 from nltk.sem.relextract import class_abbrev
 from nltk.stem.lancaster import LancasterStemmer
@@ -78,12 +79,14 @@ net = tflearn.fully_connected(net, 8)
 net = tflearn.fully_connected(net, len(output[0]), activation="softmax")
 net = tflearn.regression(net)
 
-model = tflearn.DNN(net)
-# try: 
-#     model.load("model.tflearn")
-# except:
-model.fit(training, output, n_epoch=2000, batch_size=8, show_metric=True)
-model.save("model.tflearn")
+# model = tflearn.DNN(net)
+try: 
+    model = tflearn.DNN(net)
+    model.load("model.tflearn")
+except:
+    model = tflearn.DNN(net)
+    model.fit(training, output, n_epoch=2500, batch_size=8, show_metric=True)
+    model.save("model.tflearn")
 
 def bag_of_words(s, words):
     bag  = [0 for _ in range(len(words))]
@@ -104,12 +107,18 @@ def chat():
         if inp.lower() == "quit":
             break
 
+        # Spell checker \/
+        spell = Speller(lang='en')
+        print("Original: " + inp)
+        inp = spell(inp)
+        print("Altered: " + inp)
+
         results = model.predict([bag_of_words(inp.lower(), words)])[0]
         results_index = numpy.argmax(results)
         tag = labels[results_index]
         print(results)
        
-        if results[results_index] > 0.2:
+        if results[results_index] > 0.5:
             for tg in data["intents"]:
                 if tg['tag'] == tag:
                     responses = tg['responses']
