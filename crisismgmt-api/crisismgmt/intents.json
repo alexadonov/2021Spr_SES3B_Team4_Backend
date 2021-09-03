@@ -1,8 +1,8 @@
 {"intents": [
         {"tag": "greeting",
-                "patterns": ["Hello?", "How are you going?", "How are you?", "How are you doing?"],
+                "patterns": ["hello?","i need help", "how are you going", "how are you", "how are you doing"],
 
-                "responses": ["Hello!", "Good to see you again!", "Hi there, How can I help?",
+                "responses": ["Hello!","what can i help you with", "Good to see you again!", "Hi there, How can I help?",
                 "I am good. Thanks for asking", "I am happy to be here", 
                 "Not too shabby. Thanks for asking"],
                 "context_set": ""
@@ -37,8 +37,8 @@
         },
 
         {"tag": "shop",
-        "patterns": ["Id like to ask for police", "I need the police", "I want the police",
-                     "I would like to request for police"],
+        "patterns": ["Id like to ask for police", "i need the police", "i want the police",
+                     "I would like to request for police", "police"],
 
         "responses": [ "Ok Got it. I will disspatch one of our police officer to your current location. Can you please tell me what is happening?",
                 "Police are on thier way to your location.Can you please tell me what is happening?", "Police will be at your location ASAP. Can you please tell me what is happening?", 
@@ -47,7 +47,7 @@
         },
 
         {"tag": "hours",
-         "patterns": ["inceident of operation"],
+         "patterns": ["incident of operation", "shooting"],
          "responses": ["I am sorry to hear. Please move to a safe area, police on thier way!"],
          "context_set": ""
         }

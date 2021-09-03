@@ -66,9 +66,11 @@ except:
 
     training = numpy.array(training)
     output = numpy.array(output)
+
     with open("data.pickle", "wb") as f:
         pickle.dump((words, labels, training, output), f)
 
+# tensorflow.reset_default_graph()
 
 net = tflearn.input_data(shape=[None, len(training[0])])
 net = tflearn.fully_connected(net, 8)
@@ -77,11 +79,11 @@ net = tflearn.fully_connected(net, len(output[0]), activation="softmax")
 net = tflearn.regression(net)
 
 model = tflearn.DNN(net)
-try: 
-    model.load("model.tflearn")
-except:
-    model.fit(training, output, n_epoch=1000, batch_size=8, show_metric=True)
-    model.save("model.tflearn")
+# try: 
+#     model.load("model.tflearn")
+# except:
+model.fit(training, output, n_epoch=2000, batch_size=8, show_metric=True)
+model.save("model.tflearn")
 
 def bag_of_words(s, words):
     bag  = [0 for _ in range(len(words))]
@@ -102,12 +104,12 @@ def chat():
         if inp.lower() == "quit":
             break
 
-        results = model.predict([bag_of_words(inp, words)])[0]
+        results = model.predict([bag_of_words(inp.lower(), words)])[0]
         results_index = numpy.argmax(results)
         tag = labels[results_index]
         print(results)
        
-        if results[results_index] > 0.5:
+        if results[results_index] > 0.2:
             for tg in data["intents"]:
                 if tg['tag'] == tag:
                     responses = tg['responses']
