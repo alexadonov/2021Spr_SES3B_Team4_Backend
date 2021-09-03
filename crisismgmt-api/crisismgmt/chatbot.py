@@ -1,3 +1,8 @@
+# Python 3.9
+# To retrain, delete pickle.data and model.tflearn files
+# After making changes to intents.json, delete pickle.data file
+# In Patterns in intents.json, leave out any punctuation
+
 from re import X
 import nltk
 from autocorrect import Speller
