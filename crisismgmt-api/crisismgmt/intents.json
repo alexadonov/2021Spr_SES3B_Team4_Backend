@@ -27,7 +27,7 @@
         },
 
 
-        {"tag": "age",
+        {"tag": "Age",
         "patterns": ["how old", "what is your age", "how old are you", "age?"],
 
         "responses": ["well, i came into existence gradually. But my first day as an assistant was 30th August 2021!",
@@ -36,7 +36,7 @@
         },
 
 
-        {"tag": "name",
+        {"tag": "Name",
         "patterns": ["what is your name", "what should I call you", "name?"],
 
         "responses": ["i am axel. pleased to meet you", "my name is axel", "i am axel!", "i am axel aka axel the Bot.",
