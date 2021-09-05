@@ -115,15 +115,17 @@ class Event(db.Model):
     event_type = db.Column(db.String(191), nullable=False)
     location = db.Column(db.String(191), nullable=False)
     is_active = db.Column(db.Integer, nullable=False)
+    radius = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id', ondelete='CASCADE'))
 
-    def __init__(self, event_name, severity, event_type, location, user_id):
+    def __init__(self, event_name, severity, event_type, location, radius, user_id):
         
         self.event_name = event_name
         self.severity = severity
         self.event_type = event_type
         self.location = location
         self.is_active = 1
+        self.radius = radius
         self.user_id = user_id
 
     def to_dict(self):
@@ -134,6 +136,7 @@ class Event(db.Model):
             'event_type':self.event_type,
             'location':self.location,
             'is_active':self.is_active,
+            'radius': self.radius,
             'user_id':self.user_id
         }
     
