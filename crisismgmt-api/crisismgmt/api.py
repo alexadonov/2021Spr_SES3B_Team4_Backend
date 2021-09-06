@@ -271,7 +271,7 @@ def editEvent():
 
             db.session.commit()
             return jsonify({'message' : 'Event updated', 'event' : event.to_dict()}), 201
-        else: 
+        else:
             db.session.rollback()
             return jsonify({ 'message': 'Event Not Found.'}), 409
 
@@ -291,7 +291,7 @@ def deleteEvent():
             db.session.delete(event)
             db.session.commit()
             return jsonify({'message' : 'Event delete'}), 201
-        else: 
+        else:
             db.session.rollback()
             return jsonify({ 'message': 'Event Not Found.'}), 409
 
@@ -305,14 +305,29 @@ def getEvent():
     Returns a list of all active events
     """
     try:
-        # data = request.get_json()
-        eventlist = Event.query.filter_by(is_active = 1).all()
+        data = request.get_json()
+        print(data)
+        eventlist = db.session.query(Event)
+        if data.get('event_id'):
+            eventlist = eventlist.filter(Event.event_id == data['event_id'])
+        if data.get('event_name'):
+            eventlist = eventlist.filter(Event.event_name == data['event_name'])
+        if data.get('severity'):
+            eventlist = eventlist.filter(Event.severity == data['severity'])
+        if data.get('event_type'):
+            eventlist = eventlist.filter(Event.event_type == data['event_type'])
+        if data.get('location'):
+            eventlist = eventlist.filter(Event.location == data['location'])
+        if data.get('user_id'):
+            eventlist = eventlist.filter(Event.user_id == data['user_id'])
+        if data.get('is_active'):
+            eventlist = eventlist.filter(Event.is_active == data['is_active'])
         payload = []
         for i in eventlist:
             event = i.columns_to_dict()
             payload.append(event)
         return jsonify({'Active Events' : payload}), 200
-       
+
     except exc.IntegrityError as e:
         print(e)
         db.session.rollback()
@@ -332,7 +347,7 @@ def createNode():
         db.session.add(node)
         db.session.commit()
         return jsonify({'message' : 'Node created', 'node' : node.to_dict()}), 201
-        
+
     except exc.IntegrityError as e:
         print(e)
         db.session.rollback()
@@ -358,9 +373,9 @@ def editNode():
 
             db.session.commit()
             return jsonify({'message' : 'Node updated', 'node' : node.to_dict()}), 201
-        else: 
+        else:
             db.session.rollback()
-            return jsonify({ 'message': 'Node Not Found.'}), 409  
+            return jsonify({ 'message': 'Node Not Found.'}), 409
 
     except exc.SQLAlchemyError as e:
         db.session.rollback()
@@ -378,10 +393,10 @@ def deleteNode():
             db.session.delete(node)
             db.session.commit()
             return jsonify({'message' : 'Node delete'}), 201
-        else: 
+        else:
             db.session.rollback()
             return jsonify({ 'message': 'Node Not Found.'}), 409
-        
+
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
@@ -399,7 +414,7 @@ def getNode():
             node = i.columns_to_dict()
             payload.append(node)
         return jsonify({'Existing nodes' : payload}), 200
-       
+
     except exc.IntegrityError as e:
         print(e)
         db.session.rollback()
@@ -429,11 +444,11 @@ def add_contacts():
             total_contacts +=1
             print(p)
             query = User.query.filter_by(contact_number = p).first()
-            
+
             if query:
                 print(query.user_id)
                 print(type(query.user_id))
-                
+
                 if(ContactList.query.filter_by(user_id = user).filter_by(contact_user_id = query.user_id).first()):
                     contact_exists +=1
                 else:
@@ -444,15 +459,15 @@ def add_contacts():
             else:
                 contact_not_found +=1
 
-        
+
         return jsonify({'message' : " {} contacts passed.{} added, {} duplicates and {} not found".format(total_contacts, \
             contact_added, contact_exists, contact_not_found)}), 201
-        
+
     except exc.IntegrityError as e:
         print(e)
         db.session.rollback()
         return jsonify({ 'message': 'integrity errror' }), 409
-        
+
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
@@ -477,12 +492,12 @@ def get_contacts():
             payload.append(dict_column)
 
         return jsonify({'contact_list': payload}), 200
-        
+
     except exc.IntegrityError as e:
         print(e)
         db.session.rollback()
         return jsonify({ 'message': 'integrity errror' }), 409
-        
+
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
