@@ -757,3 +757,33 @@ def approveRequest():
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
+
+
+@api.route('/display_user_location', methods=('POST',))
+def DisplayUserLocation():
+    """
+    A list of all user location
+    """
+    try:
+        # data = request.get_json()
+        
+        payload = []
+        contacts = db.session.query(User.user_id, User.location, User.first_name, User.last_name).all()
+        for c in contacts:
+            dict_column = {
+                'user_id': c.user_id,
+                'location': c.location,
+                'first_name': c.first_name,
+                'last_name': c.last_name
+            }
+            payload.append(dict_column)
+
+        return jsonify({'user location list': payload}), 200
+
+    except exc.IntegrityError as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({ 'message': 'integrity errror' }), 409
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
