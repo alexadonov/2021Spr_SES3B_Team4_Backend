@@ -557,7 +557,7 @@ def addFriends():
         requestlist = RequestList(**data)
         db.session.add(requestlist)
         db.session.commit()
-        return jsonify({'message' : 'Request sent!'}), 201
+        return jsonify({'message' : 'Request sent Successfully!'}), 201
 
     except exc.IntegrityError as e:
         print(e)
@@ -578,13 +578,14 @@ def getFriends():
         uid = data['user_id']
 
         payload = []
-        contacts = ContactList.query.filter(or_(ContactList.user_id == uid, ContactList.contact_user_id == uid)).group_by(ContactList.contact_list_id).all()
+        contacts = ContactList.query.filter(or_(ContactList.user_id == uid, ContactList.contact_user_id == uid)).group_by(-ContactList.contact_list_id).all()
         for c in contacts:
-            if c.user_id != uid:
-                user = db.session.query(User.first_name, User.last_name, User.email, User.contact_number, User.user_id).filter(User.user_id == c.contact_user_id).first()
-            else:
+            
+            if c.user_id != int(uid):
                 user = db.session.query(User.first_name, User.last_name, User.email, User.contact_number, User.user_id).filter(User.user_id == c.user_id).first()
-
+            else:
+                user = db.session.query(User.first_name, User.last_name, User.email, User.contact_number, User.user_id).filter(User.user_id == c.contact_user_id).first()
+            
             dict_column = {
                 'first_name': user.first_name,
                 'last_name': user.last_name,
@@ -720,7 +721,7 @@ def approveRequest():
                 db.session.add_all([part_1, part_2])
                 db.session.commit()
                 
-            return jsonify({'message' : 'Request approved'}), 201
+            return jsonify({'message' : 'Request approved Successfully!'}), 201
         else: 
             db.session.rollback()
             return jsonify({ 'message': 'Request Not Found.'}), 409  
