@@ -322,7 +322,7 @@ def getEvent():
         return jsonify({ 'message': e.args }), 500
 
 @api.route('/get_type_event', methods=('POST', ))
-def getEvent():
+def getTypeEvent():
     """
     Returns a list of all active events
     """
@@ -348,7 +348,7 @@ def getEvent():
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
-        
+
 @api.route('/create-node', methods=('POST',))
 def createNode():
     """
