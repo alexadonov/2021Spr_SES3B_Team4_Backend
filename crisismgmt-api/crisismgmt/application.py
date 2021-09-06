@@ -5,11 +5,13 @@ application.py
 
 from flask import Flask
 from flask_cors import CORS
+from flask_talisman import Talisman
 
 
 def create_app(app_name='CRISISMGMT_API'):
     app = Flask(app_name)
     CORS(app)
+    Talisman(app)
     app.config.from_object('crisismgmt.config.BaseConfig')
 
     from crisismgmt.api import api
