@@ -486,3 +486,20 @@ def get_contacts():
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
+
+@api.route('/get-google-auth-key', methods=('POST', ))
+def getGoogleAuthKey():
+    """
+    Returns the Google Authenticator key
+    """
+    try:
+        payload = '12345678BXYT'
+        return jsonify({'Existing nodes' : payload}), 200
+       
+    except exc.IntegrityError as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({ 'message': 'integrity errror' }), 409
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
