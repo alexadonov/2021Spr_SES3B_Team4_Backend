@@ -30,11 +30,15 @@ python manage.py db upgrade
 CD to the 'crisismgmt-api/crisismgmt' folder
 If you want to retrain the chatbot AI after it has been trained, delete 'pickle.data' and the three 'model.tflearn' files
 If you want to run it without retraining, keep the files
-run ```python chatbot.py
-# Modifying the patterns the AI learns from
+run
+```bash
+python .\chatbot.py
+```
+
+### Modifying the patterns the AI learns from
 Add paterns into the 'intents.json' file
 Delete the pickle.data file - chatbot AI will need retraining and will need to reread the intents file
-run ```python chatbot.py
+run
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
