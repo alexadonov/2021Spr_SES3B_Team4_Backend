@@ -3,16 +3,7 @@
 # After making changes to intents.json, delete pickle.data file
 # In Patterns in intents.json, leave out any punctuation
 
-from re import X
 import nltk
-from autocorrect import Speller
-from nltk import stem
-from nltk.sem.relextract import class_abbrev
-from nltk.stem.lancaster import LancasterStemmer
-from tensorflow.python.ops.gen_array_ops import shape
-from tensorflow.python.ops.gen_batch_ops import batch
-stemmer = LancasterStemmer()
-
 import numpy
 import tensorflow
 import random
@@ -20,9 +11,18 @@ import json
 import tflearn
 import pickle
 
+
+from re import X
+from autocorrect import Speller
+from nltk import stem
+from nltk.sem.relextract import class_abbrev
+from nltk.stem.lancaster import LancasterStemmer
+from tensorflow.python.ops.gen_array_ops import shape
+from tensorflow.python.ops.gen_batch_ops import batch
+
+stemmer = LancasterStemmer()
 with open ("intents.json") as file:
     data = json.load(file)
-
 try:
     with open("data.pickle", "rb") as f:
         words, labels, training, output = pickle.load(f)
@@ -44,9 +44,7 @@ except:
 
     words = [stemmer.stem(w.lower()) for w in words if w not in "?"]
     words = sorted(list(set(words)))
-
     labels = sorted(labels)
-
     training = []
     output = []
 
@@ -75,8 +73,6 @@ except:
 
     with open("data.pickle", "wb") as f:
         pickle.dump((words, labels, training, output), f)
-
-
 
 net = tflearn.input_data(shape=[None, len(training[0])])
 net = tflearn.fully_connected(net, 8)
