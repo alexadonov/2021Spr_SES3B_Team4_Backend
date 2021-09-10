@@ -26,6 +26,23 @@ Run the migration to upgrade the database with the tables described in the prior
 python manage.py db upgrade
 ```
 
+## Training and running the chatbot
+CD to the 'crisismgmt-api/crisismgmt' folder
+If you want to retrain the chatbot AI after it has been trained, delete 'pickle.data' and the three 'model.tflearn' files
+If you want to run it without retraining, keep the files
+run
+```bash
+python .\chatbot.py
+```
+
+### Modifying the patterns the AI learns from
+Add intents into the 'intents.json' file
+Patterns added in the intents.json file must have no punctuation or capitalisation as this will make it more confusing for the AI
+Everything is converted to lowercase for the input from the user.
+Responses is what the AI says back to the user, and therefore you can include correct grammer here for the user to read
+After making modifications delete the pickle.data file - chatbot AI will need retraining and will need to reread the intents file
+You can then run and train the chatbot AI
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
