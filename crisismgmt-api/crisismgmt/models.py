@@ -92,12 +92,46 @@ class ContactList(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id', ondelete='CASCADE'))
     contact_user_id = db.Column(db.Integer, db.ForeignKey('users.user_id', ondelete='CASCADE'))
     
-    
-
     def __init__(self, user_id, contact_user_id):
         self.user_id = user_id
         self.contact_user_id = contact_user_id
     
+    def to_dict(self):
+        return {
+            'user_id':self.user_id,
+            'contact_user_id':self.contact_user_id
+        }
+
+    def columns_to_dict(self):
+        dict_ = {}
+        for key in self.__mapper__.c.keys():
+            dict_[key] = getattr(self, key)
+        return dict_
+
+
+class RequestList(db.Model):
+    __tablename__ = 'request_list'
+    request_list_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id', ondelete='CASCADE'))
+    request_user_id = db.Column(db.Integer, db.ForeignKey('users.user_id', ondelete='CASCADE'))
+    content = db.Column(db.String(255), nullable=False) # introduction, infor why request
+    status = db.Column(db.String(191), nullable=False) # Applying, Success, Fail
+    reason = db.Column(db.String(255), nullable=True) # accept/refuse reason
+    
+    def __init__(self, user_id, request_user_id, content):
+        self.user_id = user_id
+        self.request_user_id = request_user_id
+        self.content = content
+        self.status = 'Applying'
+    
+    def to_dict(self):
+        return {
+            'user_id':self.user_id,
+            'request_user_id':self.request_user_id,
+            'content':self.content,
+            'status':self.status,
+            'reason':self.reason
+        }
 
     def columns_to_dict(self):
         dict_ = {}
@@ -185,9 +219,9 @@ class HelpDoc(db.Model):
     content_url = db.Column(db.String(500), nullable=False)
     event_type = db.Column(db.String(191), nullable=False)
     def __init__(self, help_doc_id, content_url, event_type):
-        this.help_doc_id = help_doc_id
-        this.content_url = content_url
-        this.event_type = event_type
+        self.help_doc_id = help_doc_id
+        self.content_url = content_url
+        self.event_type = event_type
 
     #def to_dict(self):
 
@@ -198,9 +232,9 @@ class ResourceList:
     event_type = db.Column(db.String(500), nullable=False)
     
 
-    def __init__(self, event_type):
-        this.event_id = event_type
-        this.resource_id = resource_id
+    def __init__(self, event_type, resource_id):
+        self.event_id = event_type
+        self.resource_id = resource_id
 
     #def to_dict(self):
     
@@ -212,10 +246,10 @@ class Resource(db.Model):
     resource_name = db.Column(db.String(500), nullable=False)
     resource_multiplier = db.Column(db.Integer, nullable=False)
 
-    def __init__(resource_name, resource_quantity, resource_multiplier):
-        this.resource_name = resource_name
-        this.resource_quantity = resource_quantity
-        this.resource_multiplier = resource_multiplier
+    def __init__(self, resource_name, resource_quantity, resource_multiplier):
+        self.resource_name = resource_name
+        self.resource_quantity = resource_quantity
+        self.resource_multiplier = resource_multiplier
 
     #def to_dict(self):
 
@@ -224,6 +258,9 @@ class ChatRoom(db.Model):
 
     chatroom_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     chatroom_name = db.Column(db.String(500), nullable=False)
+
+    def __init__(self, chatroom_name):
+        self.chatroom_name = chatroom_name
     
     def to_dict(self):
         return {
@@ -238,11 +275,15 @@ class ChatParticipants(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id', ondelete='CASCADE'))
     chat_id = db.Column(db.Integer, db.ForeignKey('chat_rooms.chatroom_id', ondelete='CASCADE'))
 
+    def __init__(self, user_id, chat_id):
+        self.user_id = user_id
+        self.chat_id = chat_id
+
     def to_dict(self):
         return{
-        'participant_id':self.participant_id,
-        'user_id':self.user_id,
-        'chat_id':self.chat_id
+            'participant_id':self.participant_id,
+            'user_id':self.user_id,
+            'chat_id':self.chat_id
         }
 
     def columns_to_dict(self):
@@ -267,7 +308,7 @@ class ChatMessages(db.Model):
             'chatroom_id':self.chatroom_id,
             'user_id':self.user_id,
             'message':self.message
-            }
+        }
             
     def columns_to_dict(self):
         dict_ = {}
