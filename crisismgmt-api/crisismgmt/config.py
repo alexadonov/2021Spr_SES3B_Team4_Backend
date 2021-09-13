@@ -10,4 +10,5 @@ class BaseConfig(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     SECRET_KEY = "dd02dbe50eb41792067d9d650cd3ba58df0c90c6466ccea7"
+    ENCRYPT_KEY = b'vnfpH5UNExe1_IndOtPWYWAKu0xAJkSgxmINE7cMsLw='
 

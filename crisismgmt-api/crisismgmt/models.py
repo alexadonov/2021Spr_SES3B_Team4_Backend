@@ -17,7 +17,7 @@ import jwt
 db = SQLAlchemy()
 
 required_fields = {'users':['email', 'is_authority' 'first_name', 'last_name', 'password']}
-f = Fernet(current_app.config['SECRET_KEY'])
+f = Fernet(current_app.config['ENCRYPT_KEY'])
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -35,14 +35,14 @@ class User(db.Model):
     contact_number = db.Column(db.String(255), nullable=False)
 
     def __init__(self, is_authority, first_name, last_name, email, password, contact_number):
-        self.is_authority = f.encrypt(is_authority)
-        self.first_name = f.encrypt(first_name)
-        self.last_name = f.encrypt(last_name)
-        self.email = f.encrypt(email)
+        self.is_authority = is_authority
+        self.first_name = f.encrypt(first_name.encode())
+        self.last_name = f.encrypt(last_name.encode())
+        self.email = f.encrypt(email.encode())
         self.password = generate_password_hash(password, method='sha256')
         self.status = 'null'
         self.location = 'location'
-        self.contact_number = f.encrypt(contact_number)
+        self.contact_number = f.encrypt(contact_number.encode())
     
     @classmethod
     def authenticate(cls, **kwargs):
@@ -52,7 +52,9 @@ class User(db.Model):
         if not email or not password:
             return None
 
-        user = cls.query.filter_by(email=f.encrypt(email)).first()
+        
+
+        user = cls.query.filter_by(email=f.encrypt(email.encode())).first()
         if not user or not check_password_hash(user.password, password):
             return None
 
@@ -73,11 +75,11 @@ class User(db.Model):
 
     def to_dict(self):
         return {
-            'user_id':f.decrypt(self.user_id).decode(),
-            'email':f.decrypt(self.email).decode(),
-            'first_name': f.decrypt(self.first_name).decode(),
-            'last_name': f.decrypt(self.last_name).decode(),
-            'is_authority': f.decrypt(self.is_authority).decode()
+            'user_id':self.user_id,
+            'email':f.decrypt(bytes(self.email, encoding='utf8')),
+            'first_name': f.decrypt(bytes(self.first_name, encoding='utf8')),
+            'last_name': f.decrypt(bytes(self.last_name, encoding='utf8')),
+            'is_authority': self.is_authority
         }
 
     def columns_to_dict(self):

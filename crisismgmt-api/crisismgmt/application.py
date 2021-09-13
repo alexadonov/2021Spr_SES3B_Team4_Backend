@@ -10,6 +10,7 @@ from flask_talisman import Talisman
 
 def create_app(app_name='CRISISMGMT_API'):
     app = Flask(app_name)
+    app.app_context().push()
     CORS(app)
     Talisman(app)
     app.config.from_object('crisismgmt.config.BaseConfig')
