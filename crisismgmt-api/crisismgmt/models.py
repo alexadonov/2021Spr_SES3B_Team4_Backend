@@ -38,7 +38,7 @@ class User(db.Model):
         self.is_authority = is_authority
         self.first_name = f.encrypt(first_name.encode())
         self.last_name = f.encrypt(last_name.encode())
-        self.email = f.encrypt(email.encode())
+        self.email = email
         self.password = generate_password_hash(password, method='sha256')
         self.status = 'null'
         self.location = 'location'
@@ -52,9 +52,7 @@ class User(db.Model):
         if not email or not password:
             return None
 
-        
-
-        user = cls.query.filter_by(email=f.encrypt(email.encode())).first()
+        user = cls.query.filter_by(email=email).first()
         if not user or not check_password_hash(user.password, password):
             return None
 
@@ -76,10 +74,16 @@ class User(db.Model):
     def to_dict(self):
         return {
             'user_id':self.user_id,
-            'email':f.decrypt(bytes(self.email, encoding='utf8')),
-            'first_name': f.decrypt(bytes(self.first_name, encoding='utf8')),
-            'last_name': f.decrypt(bytes(self.last_name, encoding='utf8')),
-            'is_authority': self.is_authority
+            'is_authority': self.is_authority,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'email': self.email,
+            'password': self.password,
+            'status': self.status,
+            'location': self.location,
+            'created_date': self.created_date,
+            'updated_date': self.updated_date,
+            'contact_number': self.contact_number
         }
 
     def columns_to_dict(self):
