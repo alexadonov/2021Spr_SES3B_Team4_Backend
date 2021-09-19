@@ -1,4 +1,5 @@
 {"intents": [
+
         {"tag": "Greetings Part 1",
          "patterns": ["hi", "is anyone there?", "hello", "whats up"],
 
@@ -45,16 +46,77 @@
          "context_set": ""
         },
 
+        {"tag": "Emergency Keywords",
+                "patterns": ["Please send help", "Danger", "Not Safe", "crisis"],
+        
+                "responses": ["Okay got it, Which emergency service do you require, 1: Police, 2: Fire 3: Ambulance. If all required please type All"],
+                 "context_set": ""
+        },
+
+        {"tag": "All Emergency service dispatch",
+                "patterns": ["All"],
+        
+                "responses": ["Okay got it, I will be disptaching all emergency serivces at your location. Can you please tell me what is happening?"],
+                 "context_set": ""
+        },
+
+        {"tag": "Responses",
+                "patterns": ["Stabbed", "Shooting", "Robbery", "Burglary", "Vehicle", "Murder" ],
+        
+                "responses": ["Okay got it, if you can please move to safe area. Emergency services will be at your location soon."],
+                 "context_set": ""
+        },
+
+        
+        {"tag": "Bot response: Safe Place Found",
+                "patterns": ["safe area", "place", "safe place", "soroundings", "safe soroundings", "room",
+                            "safe room"],
+        
+                "responses": ["Okay great, i am glad now that your in a safe place. Emergency service will be with you shortly"],
+                 "context_set": ""
+        },
+
+        {"tag": "Bot response: No Safe Place Found",
+                "patterns": ["cannot find", "not safe", "cannot move", "injured", "person", "people group", "robber",
+                            "gang member", "person holding a gun", "person holding a weapon", "hazard", "obstacle"],
+        
+                "responses": ["Okay got it, please remain at the spot you are now. Tell me what is your name?"],
+                 "context_set": ""
+        },
+
+        {"tag": "Name response",
+                "patterns": ["Nick"],
+        
+                "responses": ["Okay Nick, Emergency services are on their way to your location. Please just stay where you are and stay safe!"],
+                 "context_set": ""
+        },
+
 
         {"tag": "Emergency 1: Police",
-        "patterns": ["there is someone is my house", "the neighbor is punching someone in his front yard","police", "please send help", "contingency",
-        "crisis", "juncture", "pinch", "straits", "stait", "help", "gunshots", "assistacne", "urgent", 
-        "Protection", "Problem", "Issue", "Concern"],
+        "patterns": ["Please send the Police", "Police"],
 
         "responses": ["ok got it. i will disspatch one of our police officer to your current location. can you please tell me what is happening?",
         "police are on thier way to your location. can you please tell me what is happening?", "police will be at your location asap. can you please tell me what is happening?", 
         "police officer are coming to your location, please stay safe!. can you please tell me what is happening?"],
          "context_set": ""
-        }   
+        },
+
+        {"tag": "Emergency 2: Fire",
+        "patterns": ["Please send the Fire Brigade", "Fire"],
+        
+        "responses": ["ok got it. i will disspatch one of our fire trucks to your current location. can you please tell me what is happening?",
+        "fire wardens are on thier way to your location. can you please tell me what is happening?", "fire truck will be at your location asap. can you please tell me what is happening?", 
+        "fire truck is coming to your location, please move out of fire area!. can you please tell me what is happening?"],
+         "context_set": ""
+        },
+        
+        {"tag": "Emergency 3: Ambulance",
+        "patterns": ["Please send the Ambulance Brigade", "Ambulance"],
+                
+        "responses": ["ok got it. i will disspatch one of our Ambulance to your current location. can you please tell me what is happening?",
+        "Paramedics are on thier way to your location. can you please tell me what is happening?", "paramedics will be at your location asap. can you please tell me what is happening?", 
+        "Ambulance is coming to your location, please stay safe!. can you please tell me what is happening?"],
+        "context_set": ""
+        }  
    ]
 }

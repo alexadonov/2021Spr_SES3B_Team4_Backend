@@ -86,7 +86,7 @@ try:
     model.load("model.tflearn")
 except:
     model = tflearn.DNN(net)
-    model.fit(training, output, n_epoch=5500, batch_size=8, show_metric=True)
+    model.fit(training, output, n_epoch=10000, batch_size=15, show_metric=True)
     model.save("model.tflearn")
 
 def bag_of_words(s, words):
@@ -119,7 +119,7 @@ def chat():
         tag = labels[results_index]
         print(results)
        
-        if results[results_index] > 0.8:
+        if results[results_index] > 0.6:
             for tg in data["intents"]:
                 if tg['tag'] == tag:
                     responses = tg['responses']

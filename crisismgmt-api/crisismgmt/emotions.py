@@ -13,7 +13,7 @@ spark = sparknlp.start()
 MODEL_NAME='classifierdl_use_emotion'
 
 text_list = [
-            """I am hurt""",
+            """ifheifheihf""",
             """That moment when you see your friend in a commercial. Hahahaha!""",
             """My soul has just been pierced by the most evil look from @rickosborneorg. A mini panic attack &amp; chill in bones followed soon after.""",
             """For some reason I woke up thinkin it was Friday then I got to school and realized its really Monday -_-""",
