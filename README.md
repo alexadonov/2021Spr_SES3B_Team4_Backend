@@ -10,6 +10,28 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install all dep
 pip install -r requirements.txt
 ```
 
+## Running the Chatbot locally
+1. You will need download all the follwoing libraries using your terminal
+
+(import nltk
+import numpy
+import tensorflow
+import random
+import json
+import tflearn
+import pickle)
+
+Once following libraries have been downlaoded, all errors should go away. 
+
+2. I am currently running my chatbot on python 3.9.6 64-bit (you might need to do the same)
+3. Following will the steps will run the chatbot: 
+
+ cd crisismgmt-api
+ crisismgmt
+ python chatbot.py
+
+7. After inputting the following above commands into the terminal chatbot now should be running and you shoudl be able to interact with it. 
+
 ## Running the API locally
 Execute the following bash command from the project root folder to start the API server on `localhost:5000/api/`. Note you need to have Python and all dependencies installed first.
 ```bash
