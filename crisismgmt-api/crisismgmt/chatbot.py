@@ -3,22 +3,55 @@
 # After making changes to intents.json, delete pickle.data file
 # In Patterns in intents.json, leave out any punctuation
 
+import pandas as pd
+import pyspark.sql.functions as F
 import nltk
 import numpy
-import tensorflow
 import random
 import json
 import tflearn
 import pickle
+import sparknlp
 
-
+from sparknlp.annotator import *
+from sparknlp.base import *
+from sparknlp.pretrained import PretrainedPipeline
 from re import X
 from autocorrect import Speller
+from pyspark.ml import Pipeline
+from pyspark.sql import SparkSession
 from nltk import stem
 from nltk.sem.relextract import class_abbrev
 from nltk.stem.lancaster import LancasterStemmer
 from tensorflow.python.ops.gen_array_ops import shape
 from tensorflow.python.ops.gen_batch_ops import batch
+
+#Start of emotions.py initialising
+spark = sparknlp.start()
+MODEL_NAME='classifierdl_use_emotion'
+
+documentAssembler = DocumentAssembler()\
+    .setInputCol("text")\
+    .setOutputCol("document")
+    
+use = UniversalSentenceEncoder.pretrained(name="tfhub_use", lang="en")\
+ .setInputCols(["document"])\
+ .setOutputCol("sentence_embeddings")
+
+
+sentimentdl = ClassifierDLModel.pretrained(name=MODEL_NAME)\
+    .setInputCols(["sentence_embeddings"])\
+    .setOutputCol("sentiment")
+
+nlpPipeline = Pipeline(
+      stages = [
+          documentAssembler,
+          use,
+          sentimentdl
+      ])
+
+empty_df = spark.createDataFrame([['']]).toDF("text")
+#End of emotions.py initialising
 
 stemmer = LancasterStemmer()
 with open ("intents.json") as file:
@@ -123,7 +156,15 @@ def chat():
             for tg in data["intents"]:
                 if tg['tag'] == tag:
                     responses = tg['responses']
-            print(random.choice(responses)) 
+            print(random.choice(responses))
+
+            #emotions thinking
+            pipelineModel = nlpPipeline.fit(empty_df)
+            df = spark.createDataFrame(pd.DataFrame({"text":[inp]}))
+            result = pipelineModel.transform(df)
+            result.select(F.explode(F.arrays_zip('document.result', 'sentiment.result')).alias("cols")) \
+            .select(F.expr("cols['0']").alias("document"),
+            F.expr("cols['1']").alias("sentiment")).show(truncate=False)
         else:
             print("I did not get that. Please Try Again")      
 chat()

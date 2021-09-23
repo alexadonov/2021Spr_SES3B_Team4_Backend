@@ -47,10 +47,10 @@ nlpPipeline = Pipeline(
 
 empty_df = spark.createDataFrame([['']]).toDF("text")
 
+
 pipelineModel = nlpPipeline.fit(empty_df)
 df = spark.createDataFrame(pd.DataFrame({"text":text_list}))
 result = pipelineModel.transform(df)
-
 result.select(F.explode(F.arrays_zip('document.result', 'sentiment.result')).alias("cols")) \
 .select(F.expr("cols['0']").alias("document"),
-        F.expr("cols['1']").alias("sentiment")).show(truncate=False)
+F.expr("cols['1']").alias("sentiment")).show(truncate=False)

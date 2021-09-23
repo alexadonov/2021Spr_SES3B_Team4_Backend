@@ -61,7 +61,7 @@
         },
 
         {"tag": "Responses",
-                "patterns": ["Stabbed", "Shooting", "Robbery", "Burglary", "Vehicle", "Murder" ],
+                "patterns": ["Stabbed", "Stabbing", "Shot",  "Shooting", "Robbery", "Burglary", "Vehicle", "Murder" ],
         
                 "responses": ["Okay got it, if you can please move to safe area. Emergency services will be at your location soon."],
                  "context_set": ""
@@ -69,7 +69,7 @@
 
         
         {"tag": "Bot response: Safe Place Found",
-                "patterns": ["safe area", "place", "safe place", "soroundings", "safe soroundings", "room",
+                "patterns": ["safe area", "place", "safe place", "suroundings", "safe suroundings", "room",
                             "safe room"],
         
                 "responses": ["Okay great, i am glad now that your in a safe place. Emergency service will be with you shortly"],
