@@ -61,7 +61,8 @@
         },
 
         {"tag": "Responses",
-                "patterns": ["Stabbed", "Stabbing", "Shot",  "Shooting", "Robbery", "Burglary", "Vehicle", "Murder" ],
+                "patterns": ["Stabbed", "Stabbing", "Shot", "Shooting", "Robbery", "Robbed",  
+                            "Burglary", "Vehicle", "Murder", "Murdering", "Murdered", "Dead" ],
         
                 "responses": ["Okay got it, if you can please move to safe area. Emergency services will be at your location soon."],
                  "context_set": ""
@@ -69,7 +70,7 @@
 
         
         {"tag": "Bot response: Safe Place Found",
-                "patterns": ["safe area", "place", "safe place", "suroundings", "safe suroundings", "room",
+                "patterns": ["I have moved to a", "I have moved to", "safe area", "place", "safe place", "suroundings", "safe suroundings", "room",
                             "safe room"],
         
                 "responses": ["Okay great, i am glad now that your in a safe place. Emergency service will be with you shortly"],
@@ -77,8 +78,9 @@
         },
 
         {"tag": "Bot response: No Safe Place Found",
-                "patterns": ["cannot find", "not safe", "cannot move", "injured", "person", "people group", "robber",
-                            "gang member", "person holding a gun", "person holding a weapon", "hazard", "obstacle"],
+                "patterns": ["it is not safe to move","the area is blocked","I cannot find a place",
+                            "it is not safe to move", " i cannot move", "i am injured", " their is a person",
+                            " a gang member", "a person is holding a gun", "a person is holding a weapon", "hazard is present", "a obstacle is present"],
         
                 "responses": ["Okay got it, please remain at the spot you are now. Tell me what is your name?"],
                  "context_set": ""
@@ -90,7 +92,6 @@
                 "responses": ["Okay Nick, Emergency services are on their way to your location. Please just stay where you are and stay safe!"],
                  "context_set": ""
         },
-
 
         {"tag": "Emergency 1: Police",
         "patterns": ["Please send the Police", "Police"],
@@ -104,7 +105,7 @@
         {"tag": "Emergency 2: Fire",
         "patterns": ["Please send the Fire Brigade", "Fire"],
         
-        "responses": ["ok got it. i will disspatch one of our fire trucks to your current location. can you please tell me what is happening?",
+        "responses": ["ok got it. i will dispatch one of our fire trucks to your current location. can you please tell me what is happening?",
         "fire wardens are on thier way to your location. can you please tell me what is happening?", "fire truck will be at your location asap. can you please tell me what is happening?", 
         "fire truck is coming to your location, please move out of fire area!. can you please tell me what is happening?"],
          "context_set": ""
