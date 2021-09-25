@@ -12,6 +12,8 @@ import json
 import tflearn
 import pickle
 import sparknlp
+import random
+
 
 from sparknlp.annotator import *
 from sparknlp.base import *
@@ -25,6 +27,9 @@ from nltk.sem.relextract import class_abbrev
 from nltk.stem.lancaster import LancasterStemmer
 from tensorflow.python.ops.gen_array_ops import shape
 from tensorflow.python.ops.gen_batch_ops import batch
+# from google_speech import Speech
+
+lang = "en"
 
 #Start of emotions.py initialising
 spark = sparknlp.start()
@@ -119,7 +124,7 @@ try:
     model.load("model.tflearn")
 except:
     model = tflearn.DNN(net)
-    model.fit(training, output, n_epoch=10000, batch_size=15, show_metric=True)
+    model.fit(training, output, n_epoch=5000, batch_size=8, show_metric=True)
     model.save("model.tflearn")
 
 def bag_of_words(s, words):
@@ -155,9 +160,13 @@ def chat():
         if results[results_index] > 0.6:
             for tg in data["intents"]:
                 if tg['tag'] == tag:
+                    # val = random.choice(tg['responses'])
+                    # speech = Speech(val, lang)
+                    # sox_effects = ("speed", "1.0")
+                    # speech.play(sox_effects)
                     responses = tg['responses']
             print(random.choice(responses))
-
+        
             #emotions thinking
             pipelineModel = nlpPipeline.fit(empty_df)
             df = spark.createDataFrame(pd.DataFrame({"text":[inp]}))
