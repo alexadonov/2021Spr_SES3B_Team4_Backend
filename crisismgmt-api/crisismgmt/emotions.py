@@ -8,6 +8,7 @@ from sparknlp.annotator import *
 from sparknlp.base import *
 import sparknlp
 from sparknlp.pretrained import PretrainedPipeline
+from pyspark.sql.functions import col
 
 spark = sparknlp.start()
 MODEL_NAME='classifierdl_use_emotion'
@@ -54,3 +55,4 @@ result = pipelineModel.transform(df)
 result.select(F.explode(F.arrays_zip('document.result', 'sentiment.result')).alias("cols")) \
 .select(F.expr("cols['0']").alias("document"),
 F.expr("cols['1']").alias("sentiment")).show(truncate=False)
+print(result)

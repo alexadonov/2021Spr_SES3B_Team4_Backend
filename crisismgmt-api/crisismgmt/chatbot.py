@@ -13,6 +13,7 @@ import tflearn
 import pickle
 import sparknlp
 import random
+import breathing
 
 
 from sparknlp.annotator import *
@@ -27,7 +28,8 @@ from nltk.sem.relextract import class_abbrev
 from nltk.stem.lancaster import LancasterStemmer
 from tensorflow.python.ops.gen_array_ops import shape
 from tensorflow.python.ops.gen_batch_ops import batch
-# from google_speech import Speech
+#Speech Library
+from google_speech import Speech
 
 lang = "en"
 
@@ -155,17 +157,18 @@ def chat():
         results = model.predict([bag_of_words(inp.lower(), words)])[0]
         results_index = numpy.argmax(results)
         tag = labels[results_index]
-        print(results)
+        # print(results)
        
         if results[results_index] > 0.6:
             for tg in data["intents"]:
                 if tg['tag'] == tag:
-                    # val = random.choice(tg['responses'])
-                    # speech = Speech(val, lang)
-                    # sox_effects = ("speed", "1.0")
-                    # speech.play(sox_effects)
+                    #Speech Library
+                    val = random.choice(tg['responses'])
+                    speech = Speech(val, lang)
+                    sox_effects = ("speed", "1.0")
                     responses = tg['responses']
             print(random.choice(responses))
+            speech.play(sox_effects)
         
             #emotions thinking
             pipelineModel = nlpPipeline.fit(empty_df)
@@ -175,5 +178,19 @@ def chat():
             .select(F.expr("cols['0']").alias("document"),
             F.expr("cols['1']").alias("sentiment")).show(truncate=False)
         else:
-            print("I did not get that. Please Try Again")      
+            print("I did not get that. Please Try Again") 
+
+        print (tag)
+        print (F.arrays_zip('document.result', 'sentiment.result'))
+        print (F.explode(F.arrays_zip('document.result', 'sentiment.result')))
+        print (F.explode(F.arrays_zip('document.result', 'sentiment.result')).alias("cols"))
+        print (F.expr("cols['1']").alias("sentiment"))
+        result.select(F.explode(F.arrays_zip('document.result', 'sentiment.result')).alias("cols")) \
+            .select(F.expr("cols['0']").alias("document"),
+            F.expr("cols['1']").alias("sentiment")).show(truncate=False)
+  
+        if tag in breathing.keywords:
+            print('Are you panicking?')
+       
+     
 chat()
