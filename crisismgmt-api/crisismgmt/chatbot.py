@@ -179,18 +179,13 @@ def chat():
             F.expr("cols['1']").alias("sentiment")).show(truncate=False)
         else:
             print("I did not get that. Please Try Again") 
+            # Increment the value
 
-        print (tag)
-        print (F.arrays_zip('document.result', 'sentiment.result'))
-        print (F.explode(F.arrays_zip('document.result', 'sentiment.result')))
-        print (F.explode(F.arrays_zip('document.result', 'sentiment.result')).alias("cols"))
-        print (F.expr("cols['1']").alias("sentiment"))
-        result.select(F.explode(F.arrays_zip('document.result', 'sentiment.result')).alias("cols")) \
-            .select(F.expr("cols['0']").alias("document"),
-            F.expr("cols['1']").alias("sentiment")).show(truncate=False)
-  
-        if tag in breathing.keywords:
+        sentValue = result.collect()[0][3][0][3]
+        # Also check if the value is greater then 3
+        if tag in breathing.keywords and sentValue in breathing.emotions:
             print('Are you panicking?')
+        
        
      
 chat()
