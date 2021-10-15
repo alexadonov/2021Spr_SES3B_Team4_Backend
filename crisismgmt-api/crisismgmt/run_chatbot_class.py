@@ -1,8 +1,8 @@
 
-from chatbot import ChatBot
+from chatbot_class import ChatBot
 
 def main():
-    # Instantation should hand setting up
+    # Instantiation should handle setting up
     # reading from data.pickle, intents.json etc.
     chatbot = ChatBot()
 
