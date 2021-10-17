@@ -148,15 +148,19 @@ class Event(db.Model):
     severity = db.Column(db.String(191), nullable=False)
     event_type = db.Column(db.String(191), nullable=False)
     location = db.Column(db.String(191), nullable=False)
+    longitude = db.Column(db.String(191), nullable=False)
+    latitude = db.Column(db.String(191), nullable=False)
     is_active = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id', ondelete='CASCADE'))
 
-    def __init__(self, event_name, severity, event_type, location, user_id):
+    def __init__(self, event_name, severity, event_type, location, longitude, latitude, user_id):
         
         self.event_name = event_name
         self.severity = severity
         self.event_type = event_type
         self.location = location
+        self.longitude = longitude
+        self.latitude = latitude
         self.is_active = 1
         self.user_id = user_id
 
@@ -167,6 +171,8 @@ class Event(db.Model):
             'severity':self.severity,
             'event_type':self.event_type,
             'location':self.location,
+            'longitude':self.longitude,
+            'latitude':self.latitude,
             'is_active':self.is_active,
             'user_id':self.user_id
         }

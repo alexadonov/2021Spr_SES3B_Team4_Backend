@@ -15,6 +15,9 @@ from .models import db, User, ContactList, RequestList, Event, Node, HelpDoc, Re
 from .services.misc import pre_init_check, MissingModelFields, datetime_to_str, parse_datetime, poly_pos
 import jwt
 import pymysql
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpathes
 pymysql.install_as_MySQLdb()
 api = Blueprint('api', __name__)
 
@@ -779,6 +782,45 @@ def DisplayUserLocation():
             payload.append(dict_column)
 
         return jsonify({'user location list': payload}), 200
+
+    except exc.IntegrityError as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({ 'message': 'integrity errror' }), 409
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
+
+@api.route('/check_danger', methods=('POST',))
+def checkDanger():
+    """
+    If user location enters into Event radius, alert user
+    data: longitude, latitude
+    """
+    try:
+        data = request.get_json()
+        
+        # get all the events
+        eventlist = Event.query.filter_by(is_active = 1).all()
+        payload = []
+        for i in eventlist:
+            event = i.columns_to_dict()
+            payload.append(event)
+        
+        indanger = False
+        msg = ''
+        # get the radius circle
+        for j in payload:
+            if j['longitude'] != '' and j['latitude'] != '' :
+                xy = np.array([j['latitude'],j['longitude']])
+                circle = mpathes.Circle(xy,1)
+                # If user location enters into Event radius, alert user
+                if circle.contains_point(data['latitude'], data['longitude']):
+                    indanger = True
+                    msg = "Warning! You're in a danger place, leave now!"
+                    break
+        
+        return jsonify({ 'data': indanger, 'message': msg }), 200
 
     except exc.IntegrityError as e:
         print(e)
