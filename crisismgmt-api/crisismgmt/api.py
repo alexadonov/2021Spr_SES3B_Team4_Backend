@@ -486,3 +486,30 @@ def get_contacts():
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
+
+
+@api.route('/get-latlong', methods=('POST',))
+def get_latlong():
+    """
+    Get list of users and their location in lat and long
+    """
+    try:
+        data = request.get_json()
+        payload = []
+        results = User.query.with_entities(User.user_id, User.location)
+        # results = User.query.with_entities(User.user_id, User.latitude, User.longitude)
+        for u in results:
+            payload.append({
+                "user_id": u.user_id,
+                "location": u.location
+            })
+        return jsonify({"user_location": payload}), 200
+
+    except exc.IntegrityError as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({ 'message': 'integrity errror' }), 409
+        
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
