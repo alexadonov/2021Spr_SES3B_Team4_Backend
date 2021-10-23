@@ -29,6 +29,8 @@ class User(db.Model):
     password = db.Column(db.String(255), nullable=False)
     status = db.Column(db.String(255), nullable=False)
     location = db.Column(db.String(255), nullable=False)
+    longitude = db.Column(db.String(191), nullable=False)
+    latitude = db.Column(db.String(191), nullable=False)
     created_date = db.Column(db.DateTime, default=datetime.utcnow)
     updated_date = db.Column(db.DateTime, default=datetime.utcnow)
     contact_number = db.Column(db.String(255), nullable=False)
@@ -40,6 +42,8 @@ class User(db.Model):
         self.email = email
         self.password = generate_password_hash(password, method='sha256')
         self.status = 'null'
+        self.longitude = ''
+        self.latitude = ''
         self.location = 'location'
         self.contact_number = contact_number
     

@@ -771,11 +771,13 @@ def DisplayUserLocation():
         # data = request.get_json()
         
         payload = []
-        contacts = db.session.query(User.user_id, User.location, User.first_name, User.last_name).all()
+        contacts = db.session.query(User.user_id, User.location, User.longitude, User.latitude, User.first_name, User.last_name).all()
         for c in contacts:
             dict_column = {
                 'user_id': c.user_id,
                 'location': c.location,
+                'longitude': c.longitude,
+                'latitude': c.latitude,
                 'first_name': c.first_name,
                 'last_name': c.last_name
             }
