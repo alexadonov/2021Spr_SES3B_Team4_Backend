@@ -771,11 +771,13 @@ def DisplayUserLocation():
         # data = request.get_json()
         
         payload = []
-        contacts = db.session.query(User.user_id, User.location, User.first_name, User.last_name).all()
+        contacts = db.session.query(User.user_id, User.location, User.longitude, User.latitude, User.first_name, User.last_name).all()
         for c in contacts:
             dict_column = {
                 'user_id': c.user_id,
                 'location': c.location,
+                'longitude': c.longitude,
+                'latitude': c.latitude,
                 'first_name': c.first_name,
                 'last_name': c.last_name
             }
@@ -812,10 +814,13 @@ def checkDanger():
         # get the radius circle
         for j in payload:
             if j['longitude'] != '' and j['latitude'] != '' :
-                xy = np.array([j['latitude'],j['longitude']])
+                xy = np.array([float(j['latitude']),float(j['longitude'])])
                 circle = mpathes.Circle(xy,1)
+                
                 # If user location enters into Event radius, alert user
-                if circle.contains_point(data['latitude'], data['longitude']):
+                long = float(data['longitude'])
+                lat = float(data['latitude'])
+                if circle.contains_point((lat, long)):
                     indanger = True
                     msg = "Warning! You're in a danger place, leave now!"
                     break
