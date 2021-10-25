@@ -11,12 +11,13 @@ from sqlalchemy.dialects.mysql import INTEGER
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 from .services.misc import datetime_to_str, parse_datetime
+from cryptography.fernet import Fernet
 import jwt
 
 db = SQLAlchemy()
 
 required_fields = {'users':['email', 'is_authority' 'first_name', 'last_name', 'password']}
-
+f = Fernet(current_app.config['ENCRYPT_KEY'])
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -35,13 +36,13 @@ class User(db.Model):
 
     def __init__(self, is_authority, first_name, last_name, email, password, contact_number):
         self.is_authority = is_authority
-        self.first_name = first_name
-        self.last_name = last_name
+        self.first_name = f.encrypt(first_name.encode())
+        self.last_name = f.encrypt(last_name.encode())
         self.email = email
         self.password = generate_password_hash(password, method='sha256')
         self.status = 'null'
         self.location = 'location'
-        self.contact_number = contact_number
+        self.contact_number = f.encrypt(contact_number.encode())
     
     @classmethod
     def authenticate(cls, **kwargs):
@@ -73,10 +74,16 @@ class User(db.Model):
     def to_dict(self):
         return {
             'user_id':self.user_id,
-            'email':self.email,
+            'is_authority': self.is_authority,
             'first_name': self.first_name,
             'last_name': self.last_name,
-            'is_authority': self.is_authority
+            'email': self.email,
+            'password': self.password,
+            'status': self.status,
+            'location': self.location,
+            'created_date': self.created_date,
+            'updated_date': self.updated_date,
+            'contact_number': self.contact_number
         }
 
     def columns_to_dict(self):
@@ -148,15 +155,19 @@ class Event(db.Model):
     severity = db.Column(db.String(191), nullable=False)
     event_type = db.Column(db.String(191), nullable=False)
     location = db.Column(db.String(191), nullable=False)
+    longitude = db.Column(db.String(191), nullable=False)
+    latitude = db.Column(db.String(191), nullable=False)
     is_active = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id', ondelete='CASCADE'))
 
-    def __init__(self, event_name, severity, event_type, location, user_id):
+    def __init__(self, event_name, severity, event_type, location, longitude, latitude, user_id):
         
         self.event_name = event_name
         self.severity = severity
         self.event_type = event_type
         self.location = location
+        self.longitude = longitude
+        self.latitude = latitude
         self.is_active = 1
         self.user_id = user_id
 
@@ -167,6 +178,8 @@ class Event(db.Model):
             'severity':self.severity,
             'event_type':self.event_type,
             'location':self.location,
+            'longitude':self.longitude,
+            'latitude':self.latitude,
             'is_active':self.is_active,
             'user_id':self.user_id
         }

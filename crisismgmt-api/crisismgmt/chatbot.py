@@ -13,6 +13,7 @@ import tflearn
 import pickle
 import sparknlp
 import random
+import breathing
 
 
 from sparknlp.annotator import *
@@ -27,7 +28,8 @@ from nltk.sem.relextract import class_abbrev
 from nltk.stem.lancaster import LancasterStemmer
 from tensorflow.python.ops.gen_array_ops import shape
 from tensorflow.python.ops.gen_batch_ops import batch
-# from google_speech import Speech
+#Speech Library
+from google_speech import Speech
 
 lang = "en"
 
@@ -140,6 +142,10 @@ def bag_of_words(s, words):
     return numpy.array(bag)
 
 def chat():
+    misunderstoodCount = 0
+    negativeEmotionCount = 0
+    countThresh = 3
+    sentValue = ""
     print("Axel Bot here, Here to Help(type quit to stop)")
     while True: 
         inp = input("You: ")
@@ -155,17 +161,18 @@ def chat():
         results = model.predict([bag_of_words(inp.lower(), words)])[0]
         results_index = numpy.argmax(results)
         tag = labels[results_index]
-        print(results)
+        # print(results)
        
-        if results[results_index] > 0.6:
+        if results[results_index] > 0.8:
             for tg in data["intents"]:
                 if tg['tag'] == tag:
-                    # val = random.choice(tg['responses'])
-                    # speech = Speech(val, lang)
-                    # sox_effects = ("speed", "1.0")
-                    # speech.play(sox_effects)
+                    #Speech Library
+                    val = random.choice(tg['responses'])
+                    speech = Speech(val, lang)
+                    sox_effects = ("speed", "1.0")
                     responses = tg['responses']
             print(random.choice(responses))
+            speech.play(sox_effects)
         
             #emotions thinking
             pipelineModel = nlpPipeline.fit(empty_df)
@@ -174,6 +181,27 @@ def chat():
             result.select(F.explode(F.arrays_zip('document.result', 'sentiment.result')).alias("cols")) \
             .select(F.expr("cols['0']").alias("document"),
             F.expr("cols['1']").alias("sentiment")).show(truncate=False)
+            sentValue = result.collect()[0][3][0][3]
         else:
-            print("I did not get that. Please Try Again")      
+            print("I did not get that. Please Try Again") 
+            misunderstoodCount = misunderstoodCount + 1
+
+        if sentValue in breathing.emotions:
+            negativeEmotionCount = negativeEmotionCount + 1
+
+        # Also check if the value is greater then 3
+        if (tag in breathing.keywords and sentValue in breathing.emotions) or (negativeEmotionCount >= countThresh or misunderstoodCount >= countThresh):
+            misunderstoodCount = 0
+            negativeEmotionCount = 0
+            panicResponse = input('Are you panicking? (\'yes\' or \'no\') \n')
+            if (panicResponse == 'yes' or panicResponse == 'y'):
+                breathing.calmDown()
+            panicResponse = input('Are you feeling better? (\'yes\' or \'no\') \n')
+            if (panicResponse == 'no' or panicResponse == 'n'):
+                print("Let's do it one more time while we redirect you to a human")
+                breathing.calmDown()
+                
+        
+       
+     
 chat()
