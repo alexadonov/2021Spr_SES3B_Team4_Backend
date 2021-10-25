@@ -814,10 +814,13 @@ def checkDanger():
         # get the radius circle
         for j in payload:
             if j['longitude'] != '' and j['latitude'] != '' :
-                xy = np.array([j['latitude'],j['longitude']])
+                xy = np.array([float(j['latitude']),float(j['longitude'])])
                 circle = mpathes.Circle(xy,1)
+                
                 # If user location enters into Event radius, alert user
-                if circle.contains_point(data['latitude'], data['longitude']):
+                long = float(data['longitude'])
+                lat = float(data['latitude'])
+                if circle.contains_point((lat, long)):
                     indanger = True
                     msg = "Warning! You're in a danger place, leave now!"
                     break
