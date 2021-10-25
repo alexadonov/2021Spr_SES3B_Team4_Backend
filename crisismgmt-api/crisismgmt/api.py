@@ -759,13 +759,13 @@ def approveRequest():
         return jsonify({ 'message': e.args }), 500
       
 
-@api.route('/get-google-auth-key', methods=('POST', ))
+@api.route('/get-security-auth-key', methods=('POST', ))
 def getGoogleAuthKey():
     """
     Returns the Google Authenticator key
     """
     try:
-        payload = '12345678BXYT'
+        payload = 'TPQDAHVBZ5NBO5LFEQKC7V7UPATSSMFY'
         return jsonify({'Existing nodes' : payload}), 200
        
     except exc.IntegrityError as e:
