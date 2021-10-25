@@ -1,0 +1,162 @@
+{"intents": [
+
+        {"tag": "Greetings Part 1",
+         "patterns": ["hi", "is anyone there?", "hello", "whats up"],
+
+         "responses": ["hi there", "hello there", "hi there, how can i help?", 
+         "how can i be of assistance today"],
+         "context_set": ""
+        },
+
+
+        {"tag": "Greetings Part 2",
+        "patterns": ["how are you", "how are you going", "how are you doing","how are things"],
+
+        "responses": ["i am happy to be here", "not too shabby. thanks for asking", 
+        "i am great thank you for asking", "i am fine, thanks", "tops. every day is a beautifull day in life",
+        "i feel ready to help. Anything i can do for you"],
+        "context_set": ""
+        },
+
+
+        {"tag": "Goodbye",
+        "patterns": ["see you later", "goodbye", "i am leaving", "have a good day"],
+
+        "responses": ["okay, nice talking with you", "okay. i will hold down the fort", "thank you! i hope you have a nice day as well",
+        "see ya!", "same to you!"],
+         "context_set": ""
+        },
+
+
+        {"tag": "Age",
+        "patterns": ["how old", "what is your age", "how old are you", "age?"],
+
+        "responses": ["well, i came into existence gradually. But my first day as an assistant was 30th August 2021!",
+        "i am still pretty new. but i am already crawling the web like a champ 👶"],
+         "context_set": ""
+        },
+
+
+        {"tag": "Name",
+        "patterns": ["what is your name", "what should I call you", "name?"],
+
+        "responses": ["i am axel. pleased to meet you", "my name is axel", "i am axel!", "i am axel aka axel the Bot.",
+        "i am axel, your emergecny assistant! i can be of help during an emergency and a buddy as well 😀",
+        "axel is my family name, but my middle name is helpful 😊"],
+         "context_set": ""
+        },
+
+        {"tag": "thanks",
+        "patterns": ["Thanks", "Thank you", "That's helpful"],
+        "responses": ["Happy to help!", "Any time!", "My pleasure"]
+        },
+
+        {"tag": "tasks",
+        "patterns": ["What can you do?", "What are your features?", "What are you abilities", "can you sing", "can you talk" ],
+        "responses": ["I can do whatever you asks me to do", "I can talk and do things for you", "Right now i'm in developing stage as soon i'm developed, I can do everything"]
+        },
+
+        {"tag": "talk",
+        "patterns": [ "can you sing", "can you talk" ],
+        "responses": ["Yeah surely", "do you want me to sing"]
+        },
+
+        {"tag": "alive",
+        "patterns": [ "are you alive", "do you breathe", "can you run" ],
+        "responses": ["I'm in doubt about that", "No, i don't think so i need to do all this"]
+        },
+
+        {"tag": "Axel",
+        "patterns": ["Who are you?", "tell me about yourself", "tell me about you", "do you know friday", "who is friday", "what is your name","are you an AI", "what are you" ],
+        "responses": ["Hi I'm Axel and i'm an AI created for chatting with humans","Aexl here, a very advance chatbot", "Axel, chatbot of future", "Yes, I'm Axel", "You can call me Axel"],
+        "context_set": ""
+        },
+
+        {"tag": "about me",
+        "patterns": ["Do you know me?", "who am I", "tell me about myself","identify me" ],
+        "responses": ["Yes, you are a human","You are a dumb person asking a machine about yourself", "Sorry i can't tell that in public, maybe you are batman"],
+        "context_set": ""
+        },
+
+
+        {"tag": "joke",
+        "patterns": ["tell me a joke?", "make me laugh", "tell me a science joke","tell me something funny" ],
+        "responses": ["How do you make holy water? you boil the hell out of it","what kind of bees make milk instead of honey?Boobies", "Did you hear oxygen went on a date with potassium? A: It went OK."],
+        "context_set": ""
+        },
+
+        {"tag": "Emergency Keywords",
+                "patterns": ["Please send help", "Danger", "Not Safe", "crisis"],
+        
+                "responses": ["Okay got it, Which emergency service do you require, 1: Police, 2: Fire 3: Ambulance. If all required please type All"],
+                 "context_set": ""
+        },
+
+        {"tag": "All Emergency service dispatch",
+                "patterns": ["All"],
+        
+                "responses": ["Okay got it, I will be disptaching all emergency serivces at your location. Can you please tell me what is happening?"],
+                 "context_set": ""
+        },
+
+        {"tag": "Responses",
+                "patterns": ["Stabbed", "Stabbing", "Shot", "Shooting", "Robbery", "Robbed",  
+                            "Burglary", "Vehicle", "Murder", "Murdering", "Murdered", "Dead" ],
+        
+                "responses": ["Okay got it, if you can please move to safe area. Emergency services will be at your location soon."],
+                 "context_set": ""
+        },
+
+        
+        {"tag": "Bot response: Safe Place Found",
+                "patterns": ["I have moved to a", "I have moved to", "safe area", "place", "safe place", "suroundings", "safe suroundings", "room",
+                            "safe room"],
+        
+                "responses": ["Okay great, i am glad now that your in a safe place. Emergency service will be with you shortly"],
+                 "context_set": ""
+        },
+
+        {"tag": "Bot response: No Safe Place Found",
+                "patterns": ["it is not safe to move","the area is blocked","I cannot find a place",
+                            "it is not safe to move", " i cannot move", "i am injured", " their is a person",
+                            " a gang member", "a person is holding a gun", "a person is holding a weapon", "hazard is present", "a obstacle is present"],
+        
+                "responses": ["Okay got it, please remain at the spot you are now. Tell me what is your name?"],
+                 "context_set": ""
+        },
+
+        {"tag": "Name response",
+                "patterns": [""],
+        
+                "responses": ["Okay got it, Emergency services are on their way to your location. Please just stay where you are and stay safe!"],
+                 "context_set": ""
+        },
+
+        {"tag": "Emergency 1: Police",
+        "patterns": ["Please send the Police", "Police"],
+
+        "responses": ["ok got it. i will disspatch one of our police officer to your current location. can you please tell me what is happening?",
+        "police are on thier way to your location. can you please tell me what is happening?", "police will be at your location asap. can you please tell me what is happening?", 
+        "police officer are coming to your location, please stay safe!. can you please tell me what is happening?"],
+         "context_set": ""
+        },
+
+        {"tag": "Emergency 2: Fire",
+        "patterns": ["Please send the Fire Brigade", "Fire"],
+        
+        "responses": ["ok got it. i will dispatch one of our fire trucks to your current location. can you please tell me what is happening?",
+        "fire wardens are on thier way to your location. can you please tell me what is happening?", "fire truck will be at your location asap. can you please tell me what is happening?", 
+        "fire truck is coming to your location, please move out of fire area!. can you please tell me what is happening?"],
+         "context_set": ""
+        },
+        
+        {"tag": "Emergency 3: Ambulance",
+        "patterns": ["Please send the Ambulance", "Ambulance"],
+                
+        "responses": ["ok got it. i will disspatch one of our Ambulance to your current location. can you please tell me what is happening?",
+        "Paramedics are on thier way to your location. can you please tell me what is happening?", "paramedics will be at your location asap. can you please tell me what is happening?", 
+        "Ambulance is coming to your location, please stay safe!. can you please tell me what is happening?"],
+        "context_set": ""
+        }
+   ]
+}
