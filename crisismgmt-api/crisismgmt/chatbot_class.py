@@ -34,6 +34,9 @@ class ChatBot:
         self.stemmer = LancasterStemmer()
         self.initialise_dataset()
         self.initialise_model()
+        self.misunderstoodCount = 0
+        self.negativeEmotionCount = 0
+        self.countThresh = 3
 
     def initialise_pipeline(self):
         documentAssembler = DocumentAssembler()\
@@ -158,13 +161,26 @@ class ChatBot:
             result.select(F.explode(F.arrays_zip('document.result', 'sentiment.result')).alias("cols")) \
             .select(F.expr("cols['0']").alias("document"),
             F.expr("cols['1']").alias("sentiment")).show(truncate=False)
+            sentValue = result.collect()[0][3][0][3]
         else:
             output = "I did not get that. Please Try Again"
 
-        # sentValue = result.collect()[0][3][0][3]
+        if sentValue in breathing.emotions:
+            self.negativeEmotionCount = self.negativeEmotionCount + 1
 
-        # if tag in breathing.keywords and sentValue in breathing.emotions:
-        #     output = "Are you panicking?"
+        # Also check if the value is greater then 3
+        if (tag in breathing.keywords and sentValue in breathing.emotions) or \
+                (self.egativeEmotionCount >= self.countThresh or \
+                    self.misunderstoodCount >= self.countThresh):
+            self.misunderstoodCount = 0
+            self.negativeEmotionCount = 0
+            panicResponse = input('Are you panicking? (\'yes\' or \'no\') \n')
+            if (panicResponse == 'yes' or panicResponse == 'y'):
+                breathing.calmDown()
+            panicResponse = input('Are you feeling better? (\'yes\' or \'no\') \n')
+            if (panicResponse == 'no' or panicResponse == 'n'):
+                print("Let's do it one more time while we redirect you to a human")
+                breathing.calmDown()
 
         return output
 

@@ -11,6 +11,22 @@ pip install -r requirements.txt
 ```
 
 ## Running the Chatbot locally
+
+Java 8 is needed to run the chatbot. On Linux you can install it by running
+```bash
+    sudo apt install openjdk-8-jdk
+```
+
+If using Linux, install `sox` by running this command
+```bash
+    sudo apt install sox
+```
+If using Mac
+```bash
+    brew install sox
+```
+If using Windows, Download it [here](https://sourceforge.net/projects/sox/files/sox/)
+
 1. You will need download all the follwoing libraries using your terminal
 
 (import nltk
