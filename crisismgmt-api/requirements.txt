@@ -24,6 +24,7 @@ pyspark==3.1.2
 pytz==2021.3
 PyJWT==1.7.1
 six==1.15.0
+shapely==1.8.0
 spark-nlp==3.2.2
 tensorflow==2.6.0
 tflearn==0.5.0
