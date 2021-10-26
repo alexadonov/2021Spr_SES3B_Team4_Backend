@@ -13,6 +13,7 @@ from sqlalchemy import inspect,and_,or_,not_
 from functools import wraps
 from .models import db, User, ContactList, RequestList, Event, Node, HelpDoc, ResourceList, Resource, ChatRoom, ChatParticipants, ChatMessages, required_fields
 from .services.misc import pre_init_check, MissingModelFields, datetime_to_str, parse_datetime, poly_pos
+from .chatbot_class import ChatBot
 import jwt
 import pymysql
 import numpy as np
@@ -821,6 +822,32 @@ def checkDanger():
                     break
         
         return jsonify({ 'data': indanger, 'message': msg }), 200
+
+    except exc.IntegrityError as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({ 'message': 'integrity errror' }), 409
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
+
+@api.route('/chatbot_send_msg', methods=('POST',))
+def chatbotSendMsg():
+    """
+    Send a message to the chatbot
+    """
+    try:
+        data = request.get_json()
+
+        uid = data['user_id']
+        user = User.query.filter_by(user_id = uid).first()
+
+        if (user):
+            output, panic_flag = user.chatbot.send_message(data['chat_msg'], data['panic_flag'])
+            
+            return jsonify({ 'message': output, 'panic_flag' : panic_flag }), 200
+        else:
+            return jsonify({ 'data': "" }), 201
 
     except exc.IntegrityError as e:
         print(e)

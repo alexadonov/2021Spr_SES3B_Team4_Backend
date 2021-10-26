@@ -12,7 +12,7 @@ import sparknlp
 import tflearn
 import pickle
 import nltk
-import breathing
+from . import breathing
 
 from autocorrect import Speller
 from sparknlp.annotator import *
