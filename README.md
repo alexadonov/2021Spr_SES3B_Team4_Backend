@@ -6,17 +6,6 @@ CrisisMgmt is a Flask API for handling user authentication and app functionality
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install all dependencies required for development using the `requirements.txt` file in the project's root folder:
 
-```bash
-pip install -r requirements.txt
-```
-
-## Running the Chatbot locally
-
-Java 8 is needed to run the chatbot. On Linux you can install it by running
-```bash
-    sudo apt install openjdk-8-jdk
-```
-
 If using Linux, install `sox` by running this command
 ```bash
     sudo apt install sox
@@ -27,41 +16,32 @@ If using Mac
 ```
 If using Windows, Download it [here](https://sourceforge.net/projects/sox/files/sox/)
 
-1. You will need download all the follwoing libraries using your terminal
+```bash
+    pip install -r requirements.txt
+```
 
-(import nltk
-import numpy
-import tensorflow
-import random
-import json
-import tflearn
-import pickle)
+## Running the Chatbot locally
 
-Once following libraries have been downlaoded, all errors should go away. 
-
-2. I am currently running my chatbot on python 3.9.6 64-bit (you might need to do the same)
-3. Following will the steps will run the chatbot: 
-
- cd crisismgmt-api
- crisismgmt
- python chatbot.py
-
-7. After inputting the following above commands into the terminal chatbot now should be running and you shoudl be able to interact with it. 
+```bash
+    cd crisismgmt-api
+    crisismgmt
+    python chatbot.py
+```
 
 ## Running the API locally
 Execute the following bash command from the project root folder to start the API server on `localhost:5000/api/`. Note you need to have Python and all dependencies installed first.
 ```bash
-python appserver.py
+    python appserver.py
 ```
 
 ## Making database migrations using SQLAlchemy ORM
 Create an initial migration file to translate the classes in models.py to SQL that will generate corresponding tables
 ```bash
-python manage.py db migrate
+    python manage.py db migrate
 ```
 Run the migration to upgrade the database with the tables described in the prior step
 ```bash
-python manage.py db upgrade
+    python manage.py db upgrade
 ```
 
 ## Training and running the chatbot
@@ -70,7 +50,7 @@ If you want to retrain the chatbot AI after it has been trained, delete 'pickle.
 If you want to run it without retraining, keep the files
 run
 ```bash
-python .\chatbot.py
+    python .\chatbot.py
 ```
 
 ### Modifying the patterns the AI learns from
