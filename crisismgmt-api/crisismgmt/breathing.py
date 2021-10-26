@@ -40,8 +40,11 @@ sox_effects = ("speed", "1.1")
 
 def speakThis(val):
     print(val)
-    speech = Speech(val, lang)
-    speech.play(sox_effects)
+    # speech = Speech(val, lang)
+    # try:
+    #     speech.play(sox_effects)
+    # except:
+    #     print("could not play audio track")
 
 def keepBreathing(numberOfSecondsPassed):
     #Speech Library

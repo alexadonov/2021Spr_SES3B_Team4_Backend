@@ -19,6 +19,8 @@ from sparknlp.annotator import *
 from sparknlp.base import *
 from pyspark.ml import Pipeline
 from nltk.stem.lancaster import LancasterStemmer
+#from google_speech import Speech
+
 
 
 class ChatBot:
@@ -37,6 +39,7 @@ class ChatBot:
         self.misunderstoodCount = 0
         self.negativeEmotionCount = 0
         self.countThresh = 3
+        self.panicFlag = False
 
     def initialise_pipeline(self):
         documentAssembler = DocumentAssembler()\
@@ -137,22 +140,21 @@ class ChatBot:
         return numpy.array(bag)
 
     def predict_response(self, corrected_message):
+
+        output = []
+
         results = self.model.predict([self.bag_of_words(corrected_message.lower())])[0]
         results_index = numpy.argmax(results)
         tag = self.labels[results_index]
-        print(results)
-
-        output = ""
-
-        if results[results_index] > 0.6:
+        # print(results)
+       
+        if results[results_index] > 0.8:
             for tg in self.intents_data["intents"]:
                 if tg['tag'] == tag:
-                    # val = random.choice(tg['responses'])
-                    # speech = Speech(val, lang)
-                    # sox_effects = ("speed", "1.0")
-                    # speech.play(sox_effects)
+                    val = random.choice(tg['responses'])
                     responses = tg['responses']
-            output = random.choice(responses)
+                    responses = tg['responses']
+            output.append(random.choice(responses))
         
             # emotions thinking
             pipelineModel = self.nlpPipeline.fit(self.empty_df)
@@ -163,26 +165,23 @@ class ChatBot:
             F.expr("cols['1']").alias("sentiment")).show(truncate=False)
             sentValue = result.collect()[0][3][0][3]
         else:
-            output = "I did not get that. Please Try Again"
+            output.append("I did not get that. Please Try Again")
+            self.misunderstoodCount = self.misunderstoodCount + 1
+            return output, self.panicFlag
 
         if sentValue in breathing.emotions:
             self.negativeEmotionCount = self.negativeEmotionCount + 1
 
         # Also check if the value is greater then 3
         if (tag in breathing.keywords and sentValue in breathing.emotions) or \
-                (self.egativeEmotionCount >= self.countThresh or \
+                (self.negativeEmotionCount >= self.countThresh or \
                     self.misunderstoodCount >= self.countThresh):
             self.misunderstoodCount = 0
             self.negativeEmotionCount = 0
-            panicResponse = input('Are you panicking? (\'yes\' or \'no\') \n')
-            if (panicResponse == 'yes' or panicResponse == 'y'):
-                breathing.calmDown()
-            panicResponse = input('Are you feeling better? (\'yes\' or \'no\') \n')
-            if (panicResponse == 'no' or panicResponse == 'n'):
-                print("Let's do it one more time while we redirect you to a human")
-                breathing.calmDown()
+            self.panicFlag = True
+            output.append("Are you panicking?")
 
-        return output
+        return output, self.panicFlag
 
     def spell_checker(self, message):
         print("Original: " + message)
@@ -190,7 +189,9 @@ class ChatBot:
         print("Altered: " + new_message)
         return new_message
 
-    def send_message(self, message):
+    def send_message(self, message, panicFlag):
+        self.panicFlag = panicFlag
+
         # Spell check
         corrected_message = self.spell_checker(message)
 
