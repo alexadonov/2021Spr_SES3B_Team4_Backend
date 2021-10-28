@@ -20,6 +20,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpathes
 from stream_chat import StreamChat
+
 pymysql.install_as_MySQLdb()
 api = Blueprint('api', __name__)
 
@@ -76,7 +77,7 @@ def login():
     #print(token)
     #user_id = data['user_id']
     #user = User.query.get(user_id)
-    return jsonify({ 'user': user.to_dict(), 'token': token.decode('UTF-8') }), 200
+    return jsonify({ 'user': user.to_dict(), 'token': token }), 200
 
 
 @api.route('/chat/create-chatroom', methods=('POST',))
@@ -866,7 +867,7 @@ def chatAuth():
     try:
         data = request.get_json()
         user_id = data['user_id']
-        server_client = stream_chat.StreamChat(api_key="65at6j6s8kmn", api_secret="uwfcgu76eq5rgmvwtfwgm58qb4u3tzq9ax4hbqdty4fxjr732sqagt8q3b28rfr3")
+        server_client = StreamChat(api_key="65at6j6s8kmn", api_secret="uwfcgu76eq5rgmvwtfwgm58qb4u3tzq9ax4hbqdty4fxjr732sqagt8q3b28rfr3")
         token = server_client.create_token(user_id)
         return jsonify({'token': token}), 200
 
@@ -889,16 +890,19 @@ def chatSendMsg():
         uid = data['user_id']
         msg = data['message']
         panic_flag = data['panic_flag']
-        server_client = stream_chat.StreamChat(api_key="65at6j6s8kmn", api_secret="uwfcgu76eq5rgmvwtfwgm58qb4u3tzq9ax4hbqdty4fxjr732sqagt8q3b28rfr3")
+        server_client = StreamChat(api_key="65at6j6s8kmn", api_secret="uwfcgu76eq5rgmvwtfwgm58qb4u3tzq9ax4hbqdty4fxjr732sqagt8q3b28rfr3")
         channel = server_client.channel("messaging", 'helpbot'+uid)
         user = User.query.filter_by(user_id = uid).first()
         if (user):
             output, panic_flag = user.chatbot.send_message(msg, panic_flag)
-            message = {
-                "text": output,
-            }
-            channel.send_message(message, "116")
-            return panic_flag, 200
+
+            for msg in output:
+                message = {
+                    "text" : msg
+                }
+                channel.send_message(message, "116")
+            
+            return jsonify({ 'panic_flag': panic_flag }), 200
     except exc.IntegrityError as e:
         print(e)
         db.session.rollback()
