@@ -20,6 +20,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpathes
 from stream_chat import StreamChat
+import time
+from . import breathing
 
 pymysql.install_as_MySQLdb()
 api = Blueprint('api', __name__)
@@ -833,10 +835,10 @@ def checkDanger():
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
 
-@api.route('/chatbot_send_msg', methods=('POST',))
-def chatbotSendMsg():
+@api.route('/chat-panic-msg', methods=('POST',))
+def chatPanicMsg():
     """
-    Send a message to the chatbot
+    Start Breathing exercise
     """
     try:
         data = request.get_json()
@@ -844,12 +846,20 @@ def chatbotSendMsg():
         uid = data['user_id']
         user = User.query.filter_by(user_id = uid).first()
 
-        if (user):
-            output, panic_flag = user.chatbot.send_message(data['chat_msg'], data['panic_flag'])
+        if user:
+            server_client = StreamChat(api_key="65at6j6s8kmn", api_secret="uwfcgu76eq5rgmvwtfwgm58qb4u3tzq9ax4hbqdty4fxjr732sqagt8q3b28rfr3")
+            channel = server_client.channel("messaging", 'helpbot'+uid)
 
-            return jsonify({ 'message': output, 'panic_flag' : panic_flag }), 200
-        else:
-            return jsonify({ 'data': "" }), 201
+            output = breathing.calmingMessages()
+
+            for msg in output:
+                message = {
+                    "text" : msg
+                }
+                time.sleep(7)
+                channel.send_message(message, "116")
+
+        return jsonify({ 'panic_flag' : False }), 200
 
     except exc.IntegrityError as e:
         print(e)
@@ -894,13 +904,14 @@ def chatSendMsg():
         channel = server_client.channel("messaging", 'helpbot'+uid)
         user = User.query.filter_by(user_id = uid).first()
         if (user):
-            output, panic_flag = user.chatbot.send_message(msg, panic_flag)
+            if msg != "yes" and msg != "no":
+                output, panic_flag = user.chatbot.send_message(msg, panic_flag)
 
-            for msg in output:
-                message = {
-                    "text" : msg
-                }
-                channel.send_message(message, "116")
+                for msg in output:
+                    message = {
+                        "text" : msg
+                    }
+                    channel.send_message(message, "116")
             
             return jsonify({ 'panic_flag': panic_flag }), 200
     except exc.IntegrityError as e:

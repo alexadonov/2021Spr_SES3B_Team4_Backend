@@ -79,3 +79,14 @@ def calmDown():
         if (i == 1):
             val = "Almost done, one last time"
             speakThis(val)
+
+def calmingMessages():
+    return [ "Hold your breath, and silently count from 1 to 7. Then, breathe out completely as you silently count from 1 to 8",
+              "We will repeat this 3 times",
+              "Let's now hold our breath together for 7 seconds",
+              "Now let's now breathe out slowly for 8 seconds",
+              "Let's now hold our breath together for 7 seconds",
+              "Now let's now breathe out slowly for 8 seconds",
+              "Let's now hold our breath together for 7 seconds",
+              "Now let's now breathe out slowly for 8 seconds"]
+
