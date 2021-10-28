@@ -19,6 +19,7 @@ import pymysql
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpathes
+from stream_chat import StreamChat
 pymysql.install_as_MySQLdb()
 api = Blueprint('api', __name__)
 
@@ -168,7 +169,7 @@ def get_chatroom_list():
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
-    
+
 
 @api.route('chat/get-chatroom-messages', methods=('POST',))
 def get_chatroom_messages():
@@ -199,7 +200,7 @@ def get_chatroom_messages():
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
-    
+
 
 # This is a decorator function which will be used to protect authentication-sensitive API endpoints
 def token_required(f):
@@ -260,7 +261,7 @@ def createEvent():
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
-    
+
 
 @api.route('/edit-event', methods=('POST',))
 def editEvent():
@@ -286,7 +287,7 @@ def editEvent():
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
-    
+
 
 @api.route('/delete-event', methods=('POST',))
 def deleteEvent():
@@ -307,7 +308,7 @@ def deleteEvent():
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
-    
+
 
 @api.route('/get_event', methods=('POST', ))
 def getEvent():
@@ -358,7 +359,7 @@ def getTypeEvent():
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
-    
+
 
 @api.route('/create-node', methods=('POST',))
 def createNode():
@@ -379,7 +380,7 @@ def createNode():
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
-    
+
 
 @api.route('/edit-node', methods=('POST',))
 def editNode():
@@ -405,7 +406,7 @@ def editNode():
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
-    
+
 
 @api.route('/delete-node', methods=('POST',))
 def deleteNode():
@@ -426,7 +427,7 @@ def deleteNode():
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
-    
+
 
 @api.route('/get_node', methods=('POST', ))
 def getNode():
@@ -524,11 +525,11 @@ def get_contacts():
         print(e)
         db.session.rollback()
         return jsonify({ 'message': 'integrity error' }), 409
-        
+
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
-    
+
 
 # ------------------------- Firend Request -------------------------------------------
 @api.route('/search_user', methods=('POST', ))
@@ -536,13 +537,13 @@ def searchUser():
     """
     Returns a list of searching user through first name
     This is for searching user through first name while addFriends
-    Frontend should give the search data called 'name', can be part of the frist name 
+    Frontend should give the search data called 'name', can be part of the frist name
     """
     try:
         data = request.get_json()
         name = data['name'] # the search data
         userlist = db.session.query(User.first_name, User.last_name, User.user_id).filter(User.first_name.like('%'+name+'%')).order_by(-User.user_id)
-        
+
         payload = []
         for i in userlist:
             list = {
@@ -552,21 +553,21 @@ def searchUser():
             }
             payload.append(list)
         return jsonify({'User' : payload}), 200
-       
+
     except exc.IntegrityError as e:
         db.session.rollback()
         return jsonify({ 'message': 'integrity error' }), 409
     except exc.SQLAlchemyError as e:
         db.session.rollback()
-        return jsonify({ 'message': e.args }), 500   
-    
+        return jsonify({ 'message': e.args }), 500
+
 
 @api.route('/add_friends', methods=('POST',))
 def addFriends():
     """
     send friend request status: Applying, Success, Fail
     While accept the friendRequest, they will become friends and save in the contact list
-    need two users'id (user_id and request_user_id) 
+    need two users'id (user_id and request_user_id)
     """
     try:
         data = request.get_json()
@@ -577,7 +578,7 @@ def addFriends():
             and_(ContactList.user_id == user_id, ContactList.contact_user_id == request_user_id))).count()
         if contactlist:
             return jsonify({ 'message': 'You are already friends!' }), 601
-        
+
         # search for add them mutiply
         list = RequestList.query.filter_by(user_id = user_id, request_user_id = request_user_id, status = 'Applying').count()
         if list:
@@ -585,7 +586,7 @@ def addFriends():
         list = RequestList.query.filter_by(user_id = user_id, request_user_id = request_user_id, status = 'Success').count()
         if list:
             return jsonify({ 'message': 'You are already friends!' }), 603
-        
+
         requestlist = RequestList(**data)
         db.session.add(requestlist)
         db.session.commit()
@@ -598,7 +599,7 @@ def addFriends():
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
-    
+
 
 @api.route('/get_friends', methods=('POST',))
 def getFriends():
@@ -612,12 +613,12 @@ def getFriends():
         payload = []
         contacts = ContactList.query.filter(or_(ContactList.user_id == uid, ContactList.contact_user_id == uid)).group_by(-ContactList.contact_list_id).all()
         for c in contacts:
-            
+
             if c.user_id != int(uid):
                 user = db.session.query(User.first_name, User.last_name, User.email, User.contact_number, User.user_id).filter(User.user_id == c.user_id).first()
             else:
                 user = db.session.query(User.first_name, User.last_name, User.email, User.contact_number, User.user_id).filter(User.user_id == c.contact_user_id).first()
-            
+
             dict_column = {
                 'first_name': user.first_name,
                 'last_name': user.last_name,
@@ -626,20 +627,20 @@ def getFriends():
                 'contact_number': user.contact_number,
                 'id': c.contact_list_id
             }
-            
+
             payload.append(dict_column)
 
         return jsonify({'contact_list': payload}), 200
-        
+
     except exc.IntegrityError as e:
         print(e)
         db.session.rollback()
         return jsonify({ 'message': 'integrity error' }), 409
-        
+
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
-    
+
 
 @api.route('/get_receive_request', methods=('POST',))
 def getReceiveRequest():
@@ -655,7 +656,7 @@ def getReceiveRequest():
         if (list):
             for c in list:
                 user = db.session.query(User.first_name, User.last_name, User.email, User.contact_number, User.user_id).filter(User.user_id == c.user_id).first()
-                
+
                 dict_column = {
                     'first_name': user.first_name,
                     'last_name': user.last_name,
@@ -666,12 +667,12 @@ def getReceiveRequest():
                 payload.append(dict_column)
 
         return jsonify({'request_list': payload}), 200
-        
+
     except exc.IntegrityError as e:
         print(e)
         db.session.rollback()
         return jsonify({ 'message': 'integrity error' }), 409
-        
+
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
@@ -691,7 +692,7 @@ def getSendRequest():
         for c in list:
             user = User.query.filter_by(user_id = c.request_user_id).first()
             userinfo = user.columns_to_dict()
-            
+
             dict_column = {
                 'first_name': userinfo['first_name'],
                 'last_name': userinfo['last_name'],
@@ -702,12 +703,12 @@ def getSendRequest():
             payload.append(dict_column)
 
         return jsonify({'request_list': payload}), 200
-        
+
     except exc.IntegrityError as e:
         print(e)
         db.session.rollback()
         return jsonify({ 'message': 'integrity error' }), 409
-        
+
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
@@ -723,11 +724,11 @@ def approveRequest():
     try:
         data = request.get_json()
         list = RequestList.query.filter_by(request_list_id=data['request_list_id']).first()
-        
+
         if list:
             list.status = data['status']
             list.reason = data['reason']
-            
+
             db.session.commit()
 
             if (data['status'] == 'Success'):
@@ -739,24 +740,24 @@ def approveRequest():
                 # create chatroom and chatroom participants
                 user = db.session.query(User.first_name).filter(User.user_id==list.user_id).first()
                 request_user = db.session.query(User.first_name).filter(User.user_id==list.request_user_id).first()
-                # create a new chatroom for two users 
+                # create a new chatroom for two users
                 room_name = user.first_name + '&' + request_user.first_name
-                
+
                 chatroom = ChatRoom(room_name)
                 db.session.add(chatroom)
                 db.session.commit()
                 # create chatroom participants
                 chatroom_id = db.session.query(ChatRoom.chatroom_id).order_by(-ChatRoom.chatroom_id).first()
-                
+
                 part_1 = ChatParticipants(list.user_id, chatroom_id.chatroom_id)
                 part_2 = ChatParticipants(list.request_user_id, chatroom_id.chatroom_id)
                 db.session.add_all([part_1, part_2])
                 db.session.commit()
-                
+
             return jsonify({'message' : 'Request approved Successfully!'}), 201
-        else: 
+        else:
             db.session.rollback()
-            return jsonify({ 'message': 'Request Not Found.'}), 409  
+            return jsonify({ 'message': 'Request Not Found.'}), 409
 
     except exc.SQLAlchemyError as e:
         db.session.rollback()
@@ -770,7 +771,7 @@ def DisplayUserLocation():
     """
     try:
         # data = request.get_json()
-        
+
         payload = []
         contacts = db.session.query(User.user_id, User.location, User.first_name, User.last_name).all()
         for c in contacts:
@@ -800,14 +801,14 @@ def checkDanger():
     """
     try:
         data = request.get_json()
-        
+
         # get all the events
         eventlist = Event.query.filter_by(is_active = 1).all()
         payload = []
         for i in eventlist:
             event = i.columns_to_dict()
             payload.append(event)
-        
+
         indanger = False
         msg = ''
         # get the radius circle
@@ -820,7 +821,7 @@ def checkDanger():
                     indanger = True
                     msg = "Warning! You're in a danger place, leave now!"
                     break
-        
+
         return jsonify({ 'data': indanger, 'message': msg }), 200
 
     except exc.IntegrityError as e:
@@ -844,7 +845,7 @@ def chatbotSendMsg():
 
         if (user):
             output, panic_flag = user.chatbot.send_message(data['chat_msg'], data['panic_flag'])
-            
+
             return jsonify({ 'message': output, 'panic_flag' : panic_flag }), 200
         else:
             return jsonify({ 'data': "" }), 201
@@ -853,6 +854,53 @@ def chatbotSendMsg():
         print(e)
         db.session.rollback()
         return jsonify({ 'message': 'integrity errror' }), 409
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
+
+@api.route('/chat-auth', methods=('POST',))
+def chatAuth():
+    """
+    Returns a token for chat authentication
+    """
+    try:
+        data = request.get_json()
+        user_id = data['user_id']
+        server_client = stream_chat.StreamChat(api_key="65at6j6s8kmn", api_secret="uwfcgu76eq5rgmvwtfwgm58qb4u3tzq9ax4hbqdty4fxjr732sqagt8q3b28rfr3")
+        token = server_client.create_token(user_id)
+        return jsonify({'token': token}), 200
+
+    except exc.IntegrityError as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({ 'message': 'integrity errror' }), 409
+
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
+
+@api.route('/chat-send-message', methods=('POST',))
+def chatSendMsg():
+    """
+    Returns a token for chat authentication
+    """
+    try:
+        data = request.get_json()
+        user_id = data['user_id']
+        message = data['message']
+        server_client = stream_chat.StreamChat(api_key="65at6j6s8kmn", api_secret="uwfcgu76eq5rgmvwtfwgm58qb4u3tzq9ax4hbqdty4fxjr732sqagt8q3b28rfr3")
+        channel = server_client.channel("messaging", 'helpbot'+user_id)
+        message = {
+            "text": message,
+        }
+        channel.send_message(message, "116")
+        return "", 200
+
+    except exc.IntegrityError as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({ 'message': 'integrity errror' }), 409
+
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
