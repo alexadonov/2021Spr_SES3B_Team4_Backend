@@ -898,7 +898,35 @@ def chatSendMsg():
                 "text": output,
             }
             channel.send_message(message, "116")
-            return panic_flag, 200
+            return jsonify({'panic_flag': panic_flag}), 200
+    except exc.IntegrityError as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({ 'message': 'integrity errror' }), 409
+
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
+
+@api.route('/chat-panic-msg', methods=('POST',))
+def chatPanicMsg():
+    """
+    Returns a token for chat authentication
+    """
+    try:
+        data = request.get_json()
+        uid = data['user_id']
+        server_client = stream_chat.StreamChat(api_key="65at6j6s8kmn", api_secret="uwfcgu76eq5rgmvwtfwgm58qb4u3tzq9ax4hbqdty4fxjr732sqagt8q3b28rfr3")
+        channel = server_client.channel("messaging", 'helpbot'+uid)
+        time = 1
+        while time < 8:
+            message = {
+                "text": time,
+            }
+            channel.send_message(message, "116")
+            time+=1
+            sleep(1)
+        return "", 200
     except exc.IntegrityError as e:
         print(e)
         db.session.rollback()
