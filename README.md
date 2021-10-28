@@ -19,6 +19,20 @@ If using Windows, Download it [here](https://sourceforge.net/projects/sox/files/
 ```bash
     pip install -r requirements.txt
 ```
+## If running Windows
+
+Download the Windows version of OpenJDK from [here](https://adoptopenjdk.net/upstream.html?variant=openjdk8&jvmVariant=hotspot)
+- Make sure you extract it to a directory where its path has NO spaces. e.g. C:\Users\User\Desktop and NOT C:\Program Files...
+- Add the JAVA_HOME environment variable to the root directory of the java extraction (C:\Users\User\Desktop\OpenJDK\openjdk-8u312-b07)
+- Add the bin directory to PATH variable (C:\Users\User\Desktop\OpenJDK\openjdk-8u312-b07\bin)
+
+Download HADOOP [here](https://downloads.apache.org/hadoop/common/hadoop-3.3.1/hadoop-3.3.1.tar.gz)
+- using 7-zip, right click extract here to get a .tar
+- right click extract here again to get the directory
+- same with Java, do not extract it to a path that contains spaces. e.g. use (C:\Users\User\Desktop\Hadoop\
+- Add the HADOOP_HOME environment variable (C:\Users\User\Downloads\hadoop-3.3.1)
+
+Once environment variables are set up, restart you PC
 
 ## Running the Chatbot locally
 
