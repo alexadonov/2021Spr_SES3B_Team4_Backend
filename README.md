@@ -29,7 +29,7 @@ Download the Windows version of OpenJDK from [here](https://adoptopenjdk.net/ups
 Download HADOOP [here](https://downloads.apache.org/hadoop/common/hadoop-3.3.1/hadoop-3.3.1.tar.gz)
 - using 7-zip, right click extract here to get a .tar
 - right click extract here again to get the directory
-- same with Java, do not extract it to a path that contains spaces. e.g. use (C:\Users\User\Desktop\Hadoop\
+- same with Java, do not extract it to a path that contains spaces. Use (C:\Users\User\Desktop\Downloads\)
 - Add the HADOOP_HOME environment variable (C:\Users\User\Downloads\hadoop-3.3.1)
 
 Once environment variables are set up, restart you PC
