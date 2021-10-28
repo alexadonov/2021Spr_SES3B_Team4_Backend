@@ -886,16 +886,19 @@ def chatSendMsg():
     """
     try:
         data = request.get_json()
-        user_id = data['user_id']
-        message = data['message']
+        uid = data['user_id']
+        msg = data['message']
+        panic_flag = data['panic_flag']
         server_client = stream_chat.StreamChat(api_key="65at6j6s8kmn", api_secret="uwfcgu76eq5rgmvwtfwgm58qb4u3tzq9ax4hbqdty4fxjr732sqagt8q3b28rfr3")
-        channel = server_client.channel("messaging", 'helpbot'+user_id)
-        message = {
-            "text": message,
-        }
-        channel.send_message(message, "116")
-        return "", 200
-
+        channel = server_client.channel("messaging", 'helpbot'+uid)
+        user = User.query.filter_by(user_id = uid).first()
+        if (user):
+            output, panic_flag = user.chatbot.send_message(msg, panic_flag)
+            message = {
+                "text": output,
+            }
+            channel.send_message(message, "116")
+            return panic_flag, 200
     except exc.IntegrityError as e:
         print(e)
         db.session.rollback()
