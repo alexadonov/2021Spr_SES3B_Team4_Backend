@@ -31,6 +31,7 @@ Download HADOOP [here](https://downloads.apache.org/hadoop/common/hadoop-3.3.1/h
 - right click extract here again to get the directory
 - same with Java, do not extract it to a path that contains spaces. Use (C:\Users\User\Desktop\Downloads\)
 - Add the HADOOP_HOME environment variable (C:\Users\User\Downloads\hadoop-3.3.1)
+- Add the hadoop bin directory to the PATH environment variable (C:\Users\User\Downloads\hadoop-3.3.1\bin)
 - Download binaries from [here](https://github.com/srccodes/hadoop-common-2.2.0-bin/archive/refs/heads/master.zip) and copy to C:\Users\User\Downloads\hadoop-3.3.1\bin folder
 
 Once environment variables are set up, restart you PC
