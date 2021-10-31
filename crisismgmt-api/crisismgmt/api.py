@@ -761,6 +761,22 @@ def approveRequest():
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
 
+@api.route('/get-security-auth-key', methods=('POST', ))
+def getGoogleAuthKey():
+    """
+    Returns the Google Authenticator key
+    """
+    try:
+        payload = 'TPQDAHVBZ5NBO5LFEQKC7V7UPATSSMFY'
+        return jsonify({'Security_Key' : payload}), 200
+       
+    except exc.IntegrityError as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({ 'message': 'integrity errror' }), 409
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
 
 @api.route('/display_user_location', methods=('POST',))
 def DisplayUserLocation():
