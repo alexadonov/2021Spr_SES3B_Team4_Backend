@@ -10,7 +10,7 @@ import tflearn
 import pickle
 import sparknlp
 import random
-import breathing
+#import breathing
 from sparknlp.annotator import *
 from sparknlp.base import *
 from sparknlp.pretrained import PretrainedPipeline
@@ -40,8 +40,11 @@ sox_effects = ("speed", "1.1")
 
 def speakThis(val):
     print(val)
-    speech = Speech(val, lang)
-    speech.play(sox_effects)
+    # speech = Speech(val, lang)
+    # try:
+    #     speech.play(sox_effects)
+    # except:
+    #     print("could not play audio track")
 
 def keepBreathing(numberOfSecondsPassed):
     #Speech Library
@@ -76,3 +79,14 @@ def calmDown():
         if (i == 1):
             val = "Almost done, one last time"
             speakThis(val)
+
+def calmingMessages():
+    return [ "Hold your breath, and silently count from 1 to 7. Then, breathe out completely as you silently count from 1 to 8",
+              "We will repeat this 3 times",
+              "Let's now hold our breath together for 7 seconds",
+              "Now let's now breathe out slowly for 8 seconds",
+              "Let's now hold our breath together for 7 seconds",
+              "Now let's now breathe out slowly for 8 seconds",
+              "Let's now hold our breath together for 7 seconds",
+              "Now let's now breathe out slowly for 8 seconds"]
+

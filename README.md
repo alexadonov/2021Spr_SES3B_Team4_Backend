@@ -6,46 +6,58 @@ CrisisMgmt is a Flask API for handling user authentication and app functionality
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install all dependencies required for development using the `requirements.txt` file in the project's root folder:
 
+If using Linux, install `sox` by running this command
 ```bash
-pip install -r requirements.txt
+    sudo apt install sox
 ```
+If using Mac
+```bash
+    brew install sox
+```
+If using Windows, Download it [here](https://sourceforge.net/projects/sox/files/sox/)
+
+```bash
+    pip install -r requirements.txt
+```
+## If running Windows
+
+Download the Windows version of OpenJDK from [here](https://adoptopenjdk.net/upstream.html?variant=openjdk8&jvmVariant=hotspot)
+- Make sure you extract it to a directory where its path has NO spaces. e.g. C:\Users\User\Desktop and NOT C:\Program Files...
+- Add the JAVA_HOME environment variable to the root directory of the java extraction (C:\Users\User\Desktop\OpenJDK\openjdk-8u312-b07)
+- Add the bin directory to PATH variable (C:\Users\User\Desktop\OpenJDK\openjdk-8u312-b07\bin)
+
+Download HADOOP [here](https://downloads.apache.org/hadoop/common/hadoop-3.3.1/hadoop-3.3.1.tar.gz)
+- using 7-zip, right click extract here to get a .tar
+- right click extract here again to get the directory
+- same with Java, do not extract it to a path that contains spaces. Use (C:\Users\User\Desktop\Downloads\)
+- Add the HADOOP_HOME environment variable (C:\Users\User\Downloads\hadoop-3.3.1)
+- Add the hadoop bin directory to the PATH environment variable (C:\Users\User\Downloads\hadoop-3.3.1\bin)
+- Download binaries from [here](https://github.com/srccodes/hadoop-common-2.2.0-bin/archive/refs/heads/master.zip) and copy to C:\Users\User\Downloads\hadoop-3.3.1\bin folder
+
+Once environment variables are set up, restart you PC
 
 ## Running the Chatbot locally
-1. You will need download all the follwoing libraries using your terminal
 
-(import nltk
-import numpy
-import tensorflow
-import random
-import json
-import tflearn
-import pickle)
-
-Once following libraries have been downlaoded, all errors should go away. 
-
-2. I am currently running my chatbot on python 3.9.6 64-bit (you might need to do the same)
-3. Following will the steps will run the chatbot: 
-
- cd crisismgmt-api
- crisismgmt
- python chatbot.py
-
-7. After inputting the following above commands into the terminal chatbot now should be running and you shoudl be able to interact with it. 
+```bash
+    cd crisismgmt-api
+    crisismgmt
+    python chatbot.py
+```
 
 ## Running the API locally
 Execute the following bash command from the project root folder to start the API server on `localhost:5000/api/`. Note you need to have Python and all dependencies installed first.
 ```bash
-python appserver.py
+    python appserver.py
 ```
 
 ## Making database migrations using SQLAlchemy ORM
 Create an initial migration file to translate the classes in models.py to SQL that will generate corresponding tables
 ```bash
-python manage.py db migrate
+    python manage.py db migrate
 ```
 Run the migration to upgrade the database with the tables described in the prior step
 ```bash
-python manage.py db upgrade
+    python manage.py db upgrade
 ```
 
 ## Training and running the chatbot
@@ -54,7 +66,7 @@ If you want to retrain the chatbot AI after it has been trained, delete 'pickle.
 If you want to run it without retraining, keep the files
 run
 ```bash
-python .\chatbot.py
+    python .\chatbot.py
 ```
 
 ### Modifying the patterns the AI learns from

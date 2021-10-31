@@ -12,6 +12,7 @@ from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 from .services.misc import datetime_to_str, parse_datetime
 from cryptography.fernet import Fernet
+from .chatbot_class import ChatBot
 import jwt
 
 db = SQLAlchemy()
@@ -35,6 +36,7 @@ class User(db.Model):
     created_date = db.Column(db.DateTime, default=datetime.utcnow)
     updated_date = db.Column(db.DateTime, default=datetime.utcnow)
     contact_number = db.Column(db.String(255), nullable=False)
+    chatbot = ChatBot()
 
     def __init__(self, is_authority, first_name, last_name, email, password, contact_number):
         self.is_authority = is_authority

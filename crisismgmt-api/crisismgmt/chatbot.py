@@ -168,11 +168,14 @@ def chat():
                 if tg['tag'] == tag:
                     #Speech Library
                     val = random.choice(tg['responses'])
-                    speech = Speech(val, lang)
-                    sox_effects = ("speed", "1.0")
+                    #speech = Speech(val, lang)
+                    #sox_effects = ("speed", "1.0")
                     responses = tg['responses']
             print(random.choice(responses))
-            speech.play(sox_effects)
+            # try:
+            #     speech.play(sox_effects)
+            # except:
+            #     print("could not play audio track")
         
             #emotions thinking
             pipelineModel = nlpPipeline.fit(empty_df)
