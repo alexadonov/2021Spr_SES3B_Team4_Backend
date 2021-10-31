@@ -320,7 +320,7 @@ def getEvent():
         for i in eventlist:
             event = i.columns_to_dict()
             payload.append(event)
-        return jsonify({'Active Events' : payload}), 200
+        return jsonify({'Active_Events' : payload}), 200
 
     except exc.IntegrityError as e:
         print(e)
@@ -347,7 +347,7 @@ def getTypeEvent():
             for i in eventlist:
                 event = i.columns_to_dict()
                 payload.append(event)
-            return jsonify({'Active Events' : payload}), 200
+            return jsonify({'Active_Events' : payload}), 200
         else:
             return jsonify({'message': 'Must pass an event type through'}), 500
     except exc.IntegrityError as e:
