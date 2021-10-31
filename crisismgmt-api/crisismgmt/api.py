@@ -768,7 +768,7 @@ def getGoogleAuthKey():
     """
     try:
         payload = 'TPQDAHVBZ5NBO5LFEQKC7V7UPATSSMFY'
-        return jsonify({'Security Key' : payload}), 200
+        return jsonify({'Security_Key' : payload}), 200
        
     except exc.IntegrityError as e:
         print(e)
