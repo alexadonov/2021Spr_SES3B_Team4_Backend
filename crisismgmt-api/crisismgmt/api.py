@@ -325,7 +325,7 @@ def getEvent():
         for i in eventlist:
             event = i.columns_to_dict()
             payload.append(event)
-        return jsonify({'Active Events' : payload}), 200
+        return jsonify({'Active_Events' : payload}), 200
 
     except exc.IntegrityError as e:
         print(e)
@@ -352,7 +352,7 @@ def getTypeEvent():
             for i in eventlist:
                 event = i.columns_to_dict()
                 payload.append(event)
-            return jsonify({'Active Events' : payload}), 200
+            return jsonify({'Active_Events' : payload}), 200
         else:
             return jsonify({'message': 'Must pass an event type through'}), 500
     except exc.IntegrityError as e:
@@ -766,6 +766,22 @@ def approveRequest():
         db.session.rollback()
         return jsonify({ 'message': e.args }), 500
 
+@api.route('/get-security-auth-key', methods=('POST', ))
+def getGoogleAuthKey():
+    """
+    Returns the Google Authenticator key
+    """
+    try:
+        payload = 'TPQDAHVBZ5NBO5LFEQKC7V7UPATSSMFY'
+        return jsonify({'Security_Key' : payload}), 200
+       
+    except exc.IntegrityError as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({ 'message': 'integrity errror' }), 409
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({ 'message': e.args }), 500
 
 @api.route('/display_user_location', methods=('POST',))
 def DisplayUserLocation():
@@ -776,11 +792,13 @@ def DisplayUserLocation():
         # data = request.get_json()
 
         payload = []
-        contacts = db.session.query(User.user_id, User.location, User.first_name, User.last_name).all()
+        contacts = db.session.query(User.user_id, User.location, User.longitude, User.latitude, User.first_name, User.last_name).all()
         for c in contacts:
             dict_column = {
                 'user_id': c.user_id,
                 'location': c.location,
+                'longitude': c.longitude,
+                'latitude': c.latitude,
                 'first_name': c.first_name,
                 'last_name': c.last_name
             }
@@ -817,10 +835,13 @@ def checkDanger():
         # get the radius circle
         for j in payload:
             if j['longitude'] != '' and j['latitude'] != '' :
-                xy = np.array([j['latitude'],j['longitude']])
+                xy = np.array([float(j['latitude']),float(j['longitude'])])
                 circle = mpathes.Circle(xy,1)
+                
                 # If user location enters into Event radius, alert user
-                if circle.contains_point(data['latitude'], data['longitude']):
+                long = float(data['longitude'])
+                lat = float(data['latitude'])
+                if circle.contains_point((lat, long)):
                     indanger = True
                     msg = "Warning! You're in a danger place, leave now!"
                     break
